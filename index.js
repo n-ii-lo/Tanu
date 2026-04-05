@@ -179,7 +179,6 @@
     el.overlay.classList.add('is-open');
     el.overlay.removeAttribute('hidden');
     document.body.style.overflow = 'hidden';   // блокуємо скрол фону
-    el.search.focus();
     loadProducts();
   }
 
