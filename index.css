@@ -1,0 +1,553 @@
+/* ============================================================
+   TANU — index.css
+   UI overlay: кнопки, popover, картки товарів
+   Стиль: преміум, мінімалістичний, база rgb(245,245,245)
+   ============================================================ */
+
+/* ── Інверсія виділення тексту ───────────────────────────── */
+::selection {
+  background: #000;
+  color: #fff;
+}
+
+::-moz-selection {
+  background: #000;
+  color: #fff;
+}
+
+/* ── Позиція кнопки «Меню» від вьюпорта (fixed) ───────────── */
+:root {
+  --menu-btn-bottom: 32px;
+  --menu-btn-right: 32px;
+}
+
+/* ── Шар кнопок (pointer-events:none — не перехоплює Hype-кліки) ── */
+#tanu-buttons {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+}
+
+/* ── Базові стилі кнопок ──────────────────────────────────── */
+.tanu-btn {
+  pointer-events: auto;
+  cursor: pointer;
+  font-family: inherit; /* наслідує "Helvetica Neue" з body */
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* ── Кнопка "Меню" — кругла, bottom-right ─────────────── */
+#btn-menu {
+  position: fixed;
+  bottom: var(--menu-btn-bottom);
+  right: var(--menu-btn-right);
+  z-index: 501;
+
+  width: 144px;
+  height: 144px;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  gap: 0;
+
+  background: #fff;
+  border: 3px solid #CCCCCC;
+  border-radius: 50%;
+  box-shadow: none;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+#btn-menu:hover {
+  box-shadow: none;
+  transform: none;
+  border: 3px solid #000;
+  background: #E9EBED;
+}
+
+#btn-menu:active {
+  transform: none;
+  box-shadow: none;
+  border: 3px solid #000;
+  background: #000;
+}
+
+.btn-menu-emoji {
+  display: none;
+}
+
+.btn-menu-label {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  line-height: 28px;
+  color: #1a1a1a;
+}
+
+#btn-menu:active .btn-menu-label {
+  color: #fff;
+}
+
+.btn-menu-sub {
+  display: none;
+}
+
+/* ============================================================
+   OVERLAY — затемнення + блюр
+   ============================================================ */
+#menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  display: flex;
+  align-items: flex-end;         /* мобільний: знизу вгору */
+  justify-content: center;
+
+  /* приховано за замовчуванням */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+}
+
+#menu-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Popover-панель ──────────────────────────────────────── */
+#menu-popover {
+  background: rgb(245, 245, 245);
+  width: 100%;
+  max-width: 555px;
+  /* фіксована висота — попover не стрибає при зміні кількості товарів */
+  height: 88dvh;
+  height: 88vh;                  /* fallback */
+  max-height: 88dvh;
+  max-height: 88vh;
+
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -6px 40px rgba(0, 0, 0, 0.12);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* анімація появи */
+  transform: translateY(32px);
+  transition: transform 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+#menu-overlay.is-open #menu-popover {
+  transform: translateY(0);
+}
+
+/* Десктоп: центрований попover */
+@media (min-width: 768px) {
+  #menu-overlay {
+    align-items: center;
+  }
+  #menu-popover {
+    border-radius: 14px;
+    height: 82vh;
+    max-height: 82vh;
+  }
+}
+
+/* ── Drag-handle (мобільний) ─────────────────────────────── */
+.popover-handle {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+  flex-shrink: 0;
+}
+
+.popover-handle-bar {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+@media (min-width: 768px) {
+  .popover-handle {
+    display: none;
+  }
+}
+
+/* ── Заголовок попover ───────────────────────────────────── */
+.popover-header {
+  padding: 20px 24px 0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.popover-header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, rgb(245, 245, 245) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.popover-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.popover-title {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.popover-close {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #CCCCCC;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1a1a;
+  font-size: 14px;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.popover-close:hover {
+  border-color: #000;
+  background: #E9EBED;
+}
+
+.popover-close:active {
+  border-color: #000;
+  background: #000;
+  color: #fff;
+}
+
+/* ── Пошук ───────────────────────────────────────────────── */
+.search-wrap {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  color: #aaa;
+  stroke-width: 2;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.search-wrap:hover .search-icon {
+  color: #888888;
+}
+
+.search-wrap:has(.search-input:focus) .search-icon,
+.search-wrap:has(.search-input:active) .search-icon {
+  color: #000;
+}
+
+.search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px 12px 40px;
+  background: #fff;
+  border: 3px solid #CCCCCC;
+  border-radius: 12px;
+  font-size: 18px;
+  color: #1a1a1a;
+  outline: none;
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.search-input:hover {
+  border-color: #888888;
+  background: #fff;
+}
+
+.search-input:active,
+.search-input:focus {
+  border-color: #000;
+  background: #E9EBED;
+  color: #1a1a1a;
+  caret-color: #1a1a1a;
+}
+
+.search-input:focus::placeholder {
+  opacity: 0;
+}
+
+/* ── Категорії (wrap кирпичиком) ─────────────────────────── */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 14px;
+}
+
+.cat-tab {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 3px solid #CCCCCC;
+  background: #fff;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #1a1a1a;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.cat-tab:hover {
+  border-color: #000;
+  background: #E9EBED;
+}
+
+.cat-tab:active {
+  border-color: #000;
+  background: #000;
+  color: #fff;
+}
+
+.cat-tab.active {
+  border-color: #000;
+  background: #000;
+  color: #fff;
+}
+
+/* ── Список товарів ──────────────────────────────────────── */
+.product-list {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.product-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.product-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+/* ── Контейнер-обгортка для товарів ──────────────────────── */
+.product-list-wrapper {
+  border: none;
+  border-radius: 0;
+  width: 100%;
+  padding: 16px 0;
+}
+
+/* ── Картка товару (Material 3, min-height 56px) ─────────── */
+.product-item {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  min-height: 56px;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-item:hover {
+  background: #E9EBED;
+}
+
+.product-item:visited {
+  color: inherit;
+}
+
+.product-item:active {
+  background: #000;
+}
+
+.product-item:active .product-name,
+.product-item:active .product-price {
+  color: #fff;
+}
+
+.product-item:active .product-desc {
+  color: #ccc;
+}
+
+.product-item.active {
+  background: #000;
+}
+
+.product-item.active .product-name,
+.product-item.active .product-price {
+  color: #fff;
+}
+
+.product-item.active .product-desc {
+  color: #ccc;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+/* ── Внутрішній відступ картки (контент з 24px зліва/справа) ── */
+.product-item-inner {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  padding: 0 24px;
+}
+
+/* ── Зображення товару ───────────────────────────────────── */
+.product-img-wrap {
+  /* ← padding навколо картинки (12px) */
+  padding: 12px;
+  flex-shrink: 0;
+  width: 88px;
+  align-self: stretch;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Інформація про товар ────────────────────────────────── */
+.product-info {
+  flex: 1;
+  min-width: 0;
+  padding: 18px 12px 18px 18px;
+}
+
+.product-name {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-desc {
+  font-size: 14px;
+  color: #888;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+/* ── Ціна (права колонка) ──────────────────────── */
+.product-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 18px;
+}
+
+.product-price {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+/* ── Порожній стан (нічого не знайдено) ──────────────────── */
+.empty-state {
+  padding: 48px 20px;
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   АДАПТИВНІСТЬ — Мобільні пристрої
+   ============================================================ */
+
+/* Планшет і менше */
+@media (max-width: 768px) {
+  /* кнопка меню залишається однаковою на всіх пристроях */
+}
+
+/* Телефон */
+@media (max-width: 480px) {
+  .popover-title {
+    font-size: 17px;
+  }
+
+  .product-name {
+    font-size: 14px;
+  }
+
+  .product-desc {
+    font-size: 11px;
+  }
+}
+
+/* Дуже малі екрани (SE, Mini) */
+@media (max-width: 360px) {
+  .product-img-wrap {
+    width: 48px;
+  }
+
+  .popover-header {
+    padding: 4px 14px 0;
+  }
+}

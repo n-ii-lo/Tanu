@@ -14,11 +14,11 @@
     <meta name="viewport" content="user-scalable=yes, initial-scale=1.0, width=320" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
 
     <title>TANU - Кафе-морозиво в Одесі | Італійська 5</title>
 
@@ -32,7 +32,7 @@
     <!-- Open Graph для соцмереж -->
     <meta property="og:title" content="TANU - Кафе-морозиво в Одесі">
     <meta property="og:description" content="Кафе-морозиво в центрі Одеси. вул. Італійська, 5. Працюємо щодня 11:00-20:00. Телефон: 067-748-48-48">
-    <meta property="og:image" content="https://www.tanuicecream.com/og-image.jpg">
+    <meta property="og:image" content="https://www.tanuicecream.com/favicon/android-chrome-512x512.png">
     <meta property="og:url" content="https://www.tanuicecream.com/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="uk_UA">
@@ -41,7 +41,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="TANU - Кафе-морозиво в Одесі">
     <meta name="twitter:description" content="Кафе-морозиво в центрі Одеси. вул. Італійська, 5">
-    <meta name="twitter:image" content="https://www.tanuicecream.com/og-image.jpg">
+    <meta name="twitter:image" content="https://www.tanuicecream.com/favicon/android-chrome-512x512.png">
 
     <!-- Локальний бізнес Schema.org -->
     <script type="application/ld+json">
@@ -49,7 +49,7 @@
             "@context": "https://schema.org",
             "@type": "IceCreamShop",
             "name": "TANU",
-            "image": "https://www.tanuicecream.com/og-image.jpg",
+            "image": "https://www.tanuicecream.com/favicon/android-chrome-512x512.png",
             "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "вул. Італійська, 5",
@@ -91,8 +91,19 @@
             background-color:#FFF;
             margin:0;
             height:100%;
+            /* шрифт Hype-контейнера — застосовується на весь проект */
+            font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+        }
+        .my-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
         }
     </style>
+
+    <!-- TANU: UI overlay — кнопки, попover-меню, картки товарів -->
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -100,9 +111,78 @@
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<div id="tanu_hype_container" class="HYPE_document" style="margin:auto;position:relative;width:100%;height:100%;overflow:hidden;">
-    <script type="text/javascript" charset="utf-8" src="Tanu.hyperesources/tanu_hype_generated_script.js?22145"></script>
+<div id="default_hype_container" class="HYPE_document" style="margin:auto;position:relative;width:100%;height:100%;overflow:hidden;">
+    <script type="text/javascript" charset="utf-8" src="Default.hyperesources/default_hype_generated_script.js?66242"></script>
 </div>
+
+<!-- ============================================================
+     TANU: UI-шар поверх Hype сцени
+     position:fixed, z-index > Hype, pointer-events:none на контейнері
+     ============================================================ -->
+
+<!-- Кнопка меню -->
+<div id="tanu-buttons">
+  <button id="btn-menu" class="tanu-btn" type="button" aria-label="Відкрити меню морозива">
+    <span class="btn-menu-emoji" aria-hidden="true">🍦</span>
+    <span class="btn-menu-label">МЕНЮ</span>
+    <span class="btn-menu-sub">морозива</span>
+  </button>
+</div>
+
+<!-- Попover-меню з товарами -->
+<div id="menu-overlay" role="dialog" aria-modal="true" aria-labelledby="popover-title">
+
+  <div id="menu-popover">
+
+    <!-- Drag-handle (видно лише на мобільних) -->
+    <div class="popover-handle" aria-hidden="true">
+      <div class="popover-handle-bar"></div>
+    </div>
+
+    <!-- Заголовок попover -->
+    <div class="popover-header">
+
+      <div class="popover-title-row">
+        <h2 class="popover-title" id="popover-title">Меню морозива</h2>
+        <button class="popover-close" id="popover-close" type="button" aria-label="Закрити меню">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Пошук -->
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          id="product-search"
+          class="search-input"
+          type="search"
+          placeholder="Пошук товарів..."
+          autocomplete="off"
+          aria-label="Пошук товарів"
+        >
+      </div>
+
+      <!-- Вкладки категорій (заповнюються через JS) -->
+      <div class="category-tabs" id="category-tabs" role="list" aria-label="Категорії товарів"></div>
+
+    </div>
+
+    <!-- Список товарів (заповнюється через JS) -->
+    <div class="product-list" id="product-list" role="list" aria-live="polite" aria-label="Товари"></div>
+
+  </div>
+
+</div>
+
+<!-- Fallback-дані (завантажуються першими, щоб index.js міг їх використати) -->
+<script src="fallback-data.js"></script>
+<!-- Логіка меню, Strapi API, пошук, категорії, позиція кнопки доставки -->
+<script src="index.js"></script>
 
 <!-- text content for search engines: -->
 <div style="display:none" aria-hidden=true>

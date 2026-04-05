@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(diff *)",
+      "Bash(head *)",
+      "Bash(true)",
+      "Bash(cp *)",
+      "Bash(sed *)",
+      "Bash(mv *)",
+      "Bash(rm *)",
+      "Bash(node *)",
+      "Bash(rsync *)",
+      "Bash(find *)",
+      "Bash(git clean *)",
+      "Bash(python3 *)",
+      "Bash(ls *)",
+      "Bash(git checkout *)",
+      "Bash(git add *)"
+    ]
+  },
+  "$version": 3
+}
