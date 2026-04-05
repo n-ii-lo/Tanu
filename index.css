@@ -534,18 +534,6 @@
 
 /* Телефон */
 @media (max-width: 480px) {
-  .popover-title {
-    font-size: 17px;
-  }
-
-  .product-name {
-    font-size: 14px;
-  }
-
-  .product-desc {
-    font-size: 11px;
-  }
-
   .product-right {
     padding-right: 0;
   }
@@ -553,10 +541,6 @@
 
 /* Дуже малі екрани (SE, Mini) */
 @media (max-width: 360px) {
-  .product-img-wrap {
-    width: 48px;
-  }
-
   .popover-header {
     padding: 4px 14px 0;
   }
