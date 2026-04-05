@@ -539,6 +539,10 @@
   .product-desc {
     font-size: 11px;
   }
+
+  .product-right {
+    padding-right: 0;
+  }
 }
 
 /* Дуже малі екрани (SE, Mini) */
