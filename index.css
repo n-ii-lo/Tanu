@@ -366,15 +366,20 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  scrollbar-gutter: stable;
 }
 
 .product-list::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
+}
+
+.product-list::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .product-list::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
 }
 
 /* ── Контейнер-обгортка для товарів ──────────────────────── */
