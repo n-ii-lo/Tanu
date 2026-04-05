@@ -534,6 +534,19 @@
 
 /* Телефон */
 @media (max-width: 480px) {
+  #btn-menu {
+    bottom: 18px;
+    right: 18px;
+    width: 64px;
+    height: 64px;
+    border-width: 2px;
+  }
+
+  .btn-menu-label {
+    font-size: 11px;
+    line-height: 14px;
+  }
+
   .product-right {
     padding-right: 0;
   }

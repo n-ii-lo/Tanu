@@ -21,7 +21,8 @@
       "Bash(npx *)",
       "Bash(vercel *)",
       "Bash(file *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(xxd)"
     ]
   },
   "$version": 3
