@@ -341,8 +341,8 @@
 }
 
 .cat-tab:hover {
-  border-color: #000;
-  background: #E9EBED;
+  border-color: #888888;
+  background: transparent;
 }
 
 .cat-tab:active {
