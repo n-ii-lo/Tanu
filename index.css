@@ -506,6 +506,7 @@
   font-weight: 700;
   color: #1a1a1a;
   white-space: nowrap;
+  text-align: right;
 }
 
 /* ── Порожній стан (нічого не знайдено) ──────────────────── */
