@@ -297,11 +297,12 @@
   /* ── ФІЛЬТРАЦІЯ ─────────────────────────────────────────── */
   function getFiltered() {
     return state.products.filter(function (p) {
+      var hasImage = p.image && p.image !== '';
       var matchCat  = state.activeCategory === 'all' || p.category === state.activeCategory;
       var matchText = !state.query ||
         p.name.toLowerCase().includes(state.query) ||
         p.description.toLowerCase().includes(state.query);
-      return matchCat && matchText;
+      return hasImage && matchCat && matchText;
     });
   }
 
