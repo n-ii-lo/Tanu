@@ -316,13 +316,37 @@
   /* ── ФІЛЬТРАЦІЯ ─────────────────────────────────────────── */
   function getFiltered() {
     return state.products.filter(function (p) {
-      var hasImage = p.image && p.image !== '';
       var matchCat  = state.activeCategory === 'all' || p.category === state.activeCategory;
       var matchText = !state.query ||
         p.name.toLowerCase().includes(state.query) ||
         p.description.toLowerCase().includes(state.query);
-      return hasImage && matchCat && matchText;
+      return matchCat && matchText;
     });
+  }
+
+  /* ── РАНДОМНІ КАРТИНКИ З FALLBACK ───────────────────────── */
+  // Доступні картинки з fallback-data.js для підстановки замість сірого квадрата
+  var FALLBACK_IMAGES = [
+    "Tanu.hyperesources/тайський чай.png",
+    "Tanu.hyperesources/матча + полуниця.png",
+    "Tanu.hyperesources/кунжут чорний.png",
+    "Tanu.hyperesources/макадамія.png",
+    "Tanu.hyperesources/анчан.png",
+    "Tanu.hyperesources/малина.png",
+    "Tanu.hyperesources/манго.png",
+    "Tanu.hyperesources/гранат.png",
+    "Tanu.hyperesources/жасмин + порічка.png",
+    "Tanu.hyperesources/полуниця + базилік.png",
+    "Tanu.hyperesources/персик + розмарин.png",
+    "Tanu.hyperesources/йогурт + лохина.png",
+    "Tanu.hyperesources/куркума.png",
+    "Tanu.hyperesources/тану_6511.png",
+    "Tanu.hyperesources/тану_6511-1.png",
+    "Tanu.hyperesources/тану24_5328.png"
+  ];
+
+  function getRandomImage() {
+    return FALLBACK_IMAGES[Math.floor(Math.random() * FALLBACK_IMAGES.length)];
   }
 
   /* ── ВІДОБРАЖЕННЯ ТОВАРІВ ───────────────────────────────── */
@@ -342,11 +366,9 @@
   }
 
   function productCardHTML(p) {
-    var PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' " +
-      "width='88' height='88'%3E%3Crect width='88' height='88' fill='%23e6e6e6'/%3E%3C/svg%3E";
-
-    var imgSrc  = p.image || PLACEHOLDER;
-    var imgFail = "this.onerror=function(){this.src='" + PLACEHOLDER + "'}";
+    var imgSrc  = p.image && p.image !== '' ? p.image : getRandomImage();
+    var randomFallback = getRandomImage();
+    var imgFail = "this.onerror=function(){this.src='" + randomFallback + "';this.onerror=null;}";
 
     var priceHTML = p.price
       ? '<span class="product-price">' + esc(p.price) + '</span>'
