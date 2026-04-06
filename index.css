@@ -127,7 +127,7 @@
   /* приховано за замовчуванням */
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.15s ease-out;
+  transition: opacity 0.1s ease-out;
 }
 
 #menu-overlay.is-open {
@@ -155,7 +155,7 @@
 
   /* анімація появи — швидша */
   transform: translateY(32px);
-  transition: transform 0.15s ease-out;
+  transition: transform 0.1s ease-out;
 }
 
 #menu-overlay.is-open #menu-popover {

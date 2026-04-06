@@ -214,14 +214,14 @@
         closeMenuWithSwipe();
       } else if (hasMoved) {
         // повертаємо назад з анімацією
-        el.popover.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+        el.popover.style.transition = 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)';
         el.popover.style.transform = 'translateY(0)';
         // повністю скидаємо transition та transform після анімації
         setTimeout(function () {
           el.popover.style.transition = '';
           el.popover.style.transform = '';
           hasMoved = false;
-        }, 260);
+        }, 160);
       } else {
         hasMoved = false;
       }
@@ -232,7 +232,7 @@
     }, { passive: true });
 
     function closeMenuWithSwipe() {
-      el.popover.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+      el.popover.style.transition = 'transform 0.12s cubic-bezier(0.4, 0, 0.2, 1)';
       el.popover.style.transform = 'translateY(100%)';
       // спочатку ховаємо overlay (opacity), потім скидаємо popover styles
       setTimeout(function () {
@@ -248,8 +248,8 @@
           el.popover.style.transition = '';
           el.popover.style.transform = '';
           hasMoved = false;
-        }, 160);
-      }, 150);
+        }, 110);
+      }, 80);
     }
   }
 
@@ -282,7 +282,7 @@
     isClosing = true;
     el.overlay.classList.remove('is-open');
 
-    // чекаємо завершення transition (opacity 0.15s) перед відновленням скролу
+    // чекаємо завершення transition (opacity 0.1s) перед відновленням скролу
     setTimeout(function () {
       document.body.style.overflow = '';
       el.search.value = '';
@@ -291,7 +291,7 @@
       state.activeCategory = 'all';
       resetCategoryTabs();
       isClosing = false;
-    }, 160);
+    }, 110);
   }
 
   /* ── ЗАВАНТАЖЕННЯ ТОВАРІВ ────────────────────────────────── */
