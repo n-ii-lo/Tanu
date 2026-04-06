@@ -111,6 +111,12 @@
     }).join('');
   }
 
+  function resetCategoryTabs() {
+    el.catTabs.querySelectorAll('.cat-tab').forEach(function (t) {
+      t.classList.toggle('active', t.dataset.cat === 'all');
+    });
+  }
+
   /* ── ПОДІЇ ─────────────────────────────────────────────── */
   function bindEvents() {
     // Відкрити меню
@@ -134,6 +140,17 @@
     // Пошук
     el.search.addEventListener('input', function () {
       state.query = this.value.trim().toLowerCase();
+      el.search.parentElement.classList.toggle('has-value', this.value.length > 0);
+      renderProducts();
+    });
+
+    // Очистити пошук
+    el.searchClear = document.getElementById('search-clear');
+    el.searchClear.addEventListener('click', function () {
+      el.search.value = '';
+      state.query = '';
+      el.search.parentElement.classList.remove('has-value');
+      el.search.focus();
       renderProducts();
     });
 
@@ -236,6 +253,8 @@
           document.body.style.overflow = '';
           el.search.value = '';
           state.query = '';
+          state.activeCategory = 'all';
+          resetCategoryTabs();
           isClosing = false;
           // скидаємо popover styles після повного закриття
           el.popover.style.transition = '';
@@ -254,9 +273,17 @@
     el.overlay.classList.add('is-open');
     el.overlay.removeAttribute('hidden');
     document.body.style.overflow = 'hidden';
+    // Скидаємо пошук і категорію на дефолт при кожному відкритті
+    el.search.value = '';
+    state.query = '';
+    state.activeCategory = 'all';
+    resetCategoryTabs();
+    el.search.parentElement.classList.remove('has-value');
     // Дані вже завантажені при init(), не треба знову викликати loadProducts()
     if (!state.loaded) {
       showLoading();
+    } else {
+      renderProducts();
     }
   }
 
@@ -272,6 +299,9 @@
       document.body.style.overflow = '';
       el.search.value = '';
       state.query = '';
+      // скидаємо категорію на "всі" при закритті
+      state.activeCategory = 'all';
+      resetCategoryTabs();
       isClosing = false;
     }, 160);
   }
