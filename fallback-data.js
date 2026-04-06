@@ -6,33 +6,6 @@ window.TANU_FALLBACK_PRODUCTS = [
 
   /* ─── Мороженое ───────────────────────────────────────────── */
   {
-    id: 1,
-    name: "Тайський чай",
-    category: "ice-cream",
-    price: "85 грн",
-    description: "Ніжний молочний пломбір з ароматом тайського чаю та ваніллю",
-    image: IMG_BASE + "тайський чай.png",
-    slug: "tayskyi-chai"
-  },
-  {
-    id: 2,
-    name: "Матча + Полуниця",
-    category: "ice-cream",
-    price: "90 грн",
-    description: "Кремова матча з'єднується з ягодами полуниці — свіжо та гармонійно",
-    image: IMG_BASE + "матча + полуниця.png",
-    slug: "matcha-polunytsia"
-  },
-  {
-    id: 3,
-    name: "Чорний кунжут",
-    category: "ice-cream",
-    price: "95 грн",
-    description: "Насичений смак чорного кунжуту з легкою горіховою нотою",
-    image: IMG_BASE + "кунжут чорний.png",
-    slug: "chornyi-kunzhut"
-  },
-  {
     id: 4,
     name: "Макадамія",
     category: "ice-cream",
