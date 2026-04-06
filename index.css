@@ -146,7 +146,7 @@
   max-height: 88dvh;
   max-height: 88vh;
 
-  border-radius: 14px 14px 0 0;
+  border-radius: 32px 32px 0 0;
   box-shadow: 0 -6px 40px rgba(0, 0, 0, 0.12);
 
   display: flex;
@@ -173,7 +173,7 @@
     align-items: center;
   }
   #menu-popover {
-    border-radius: 14px;
+    border-radius: 32px;
     height: 82vh;
     max-height: 82vh;
   }
@@ -327,7 +327,7 @@
   padding: 12px 40px 12px 40px;
   background: #fff;
   border: 3px solid #CCCCCC;
-  border-radius: 12px;
+  border-radius: 32px;
   font-size: 18px;
   color: #1a1a1a;
   outline: none;
@@ -335,6 +335,17 @@
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
+}
+
+/* Hide browser's native clear button */
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.search-input::-moz-search-clear {
+  display: none;
 }
 
 .search-input::placeholder {
@@ -368,7 +379,7 @@
 
 .cat-tab {
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 32px;
   border: 3px solid #CCCCCC;
   background: #fff;
   font-size: 14px;
