@@ -66,43 +66,29 @@
 
   /* ── ЧЕКАЄМО HYPE СЦЕНИ ─────────────────────────────────── */
   function waitForHypeReady() {
-    var hypeContainer = document.getElementById('tanu_hype_container');
+    var shown = false;
 
     function showButton() {
+      if (shown) return;
+      shown = true;
       setTimeout(function () {
         el.btnMenu.parentElement.classList.add('is-visible');
       }, 300);
     }
 
-    // Якщо iframe вже є — Hype вже завантажився
-    if (hypeContainer && hypeContainer.querySelector('iframe')) {
+    // Показуємо кнопку майже в кінці завантаження сторінки
+    // window.load = всі ресурси завантажені, показуємо трохи раніше
+    if (document.readyState === 'complete') {
+      // Сторінка вже повністю завантажена
       showButton();
-      return;
+    } else {
+      window.addEventListener('load', function () {
+        showButton();
+      });
     }
 
-    // MutationObserver — чекаємо появи iframe в Hype контейнері
-    var observer = new MutationObserver(function (mutations) {
-      for (var i = 0; i < mutations.length; i++) {
-        var added = mutations[i].addedNodes;
-        for (var j = 0; j < added.length; j++) {
-          if (added[j].nodeName === 'IFRAME' || (added[j].querySelector && added[j].querySelector('iframe'))) {
-            observer.disconnect();
-            showButton();
-            return;
-          }
-        }
-      }
-    });
-
-    if (hypeContainer) {
-      observer.observe(hypeContainer, { childList: true, subtree: true });
-    }
-
-    // Fallback: якщо Hype не завантажиться за 3 секунди — все одно показуємо
-    setTimeout(function () {
-      observer.disconnect();
-      showButton();
-    }, 3000);
+    // Fallback: якщо load не спрацює за 4 секунди — показуємо
+    setTimeout(showButton, 4000);
   }
 
   /* ── КАТЕГОРІЇ: побудова вкладок ─────────────────────── */
