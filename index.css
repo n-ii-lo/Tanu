@@ -544,11 +544,11 @@
   }
 
   .search-wrap {
-    margin-bottom: 14px;
+    margin: 0 18px 14px;
   }
 
   .category-tabs {
-    padding-bottom: 14px;
+    padding: 0 18px 14px;
   }
 
   .product-list-wrapper {
@@ -556,20 +556,20 @@
   }
 
   .product-item-inner {
-    padding: 0 18px;
+    padding: 0 24px;
   }
 
   .product-img-wrap {
-    padding: 0 12px 0 0;
-    width: 64px;
+    padding: 12px;
+    width: 88px;
   }
 
   .product-info {
-    padding: 14px 8px 14px 12px;
+    padding: 18px 12px 18px 18px;
   }
 
   .product-right {
-    padding: 14px 0 14px 8px;
+    padding: 18px 0px 18px 18px;
   }
 
   /* Disable hover effects on touch devices */
