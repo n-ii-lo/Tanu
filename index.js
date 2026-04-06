@@ -114,6 +114,14 @@
     var isAtTop = false;
     var threshold = 80; // px свайпу для закриття
     var hasMoved = false;
+    var rafId = null;
+
+    function clearRAF() {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }
 
     el.popover.addEventListener('touchstart', function (e) {
       startY = e.touches[0].clientY;
@@ -121,6 +129,9 @@
       isAtTop = el.productList.scrollTop <= 0;
       isDragging = true;
       hasMoved = false;
+      clearRAF();
+      // скасовуємо transition для плавного drag
+      el.popover.style.transition = 'none';
     }, { passive: true });
 
     el.popover.addEventListener('touchmove', function (e) {
@@ -132,14 +143,18 @@
       if (isAtTop && diff > 10) {
         hasMoved = true;
         el.productList.style.overflow = 'hidden';
-        el.popover.style.transition = 'none';
-        el.popover.style.transform = 'translateY(' + diff + 'px)';
+        // використовуємо requestAnimationFrame для плавної анімації
+        clearRAF();
+        rafId = requestAnimationFrame(function () {
+          el.popover.style.transform = 'translateY(' + diff + 'px)';
+        });
       }
     }, { passive: true });
 
     el.popover.addEventListener('touchend', function () {
       if (!isDragging) return;
       isDragging = false;
+      clearRAF();
       el.productList.style.overflow = '';
 
       var diff = currentY - startY;
@@ -147,30 +162,34 @@
       if (isAtTop && hasMoved && diff > threshold) {
         closeMenuWithSwipe();
       } else if (hasMoved) {
-        // повертаємо назад
-        el.popover.style.transition = 'transform 0.25s ease';
+        // повертаємо назад з анімацією
+        el.popover.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
         el.popover.style.transform = 'translateY(0)';
-        // скидаємо transition після анімації
+        // повністю скидаємо transition та transform після анімації
         setTimeout(function () {
           el.popover.style.transition = '';
           el.popover.style.transform = '';
+          hasMoved = false;
         }, 260);
+      } else {
+        hasMoved = false;
       }
 
       startY = 0;
       currentY = 0;
       isAtTop = false;
-      hasMoved = false;
     }, { passive: true });
 
     function closeMenuWithSwipe() {
-      el.popover.style.transition = 'transform 0.2s ease-in';
+      el.popover.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
       el.popover.style.transform = 'translateY(100%)';
       setTimeout(function () {
         closeMenu();
+        // повністю скидаємо styles після закриття
         el.popover.style.transition = '';
         el.popover.style.transform = '';
-      }, 200);
+        hasMoved = false;
+      }, 210);
     }
   }
 
