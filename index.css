@@ -556,20 +556,20 @@
   }
 
   .product-item-inner {
-    padding: 0 24px;
+    padding: 0 18px;
   }
 
   .product-img-wrap {
-    padding: 12px;
-    width: 88px;
+    padding: 0 12px 0 0;
+    width: 64px;
   }
 
   .product-info {
-    padding: 18px 12px 18px 18px;
+    padding: 14px 8px 14px 12px;
   }
 
   .product-right {
-    padding: 18px 0px 18px 18px;
+    padding: 14px 0 14px 8px;
   }
 
   /* Disable hover effects on touch devices */
