@@ -571,33 +571,6 @@
   .product-right {
     padding: 14px 0 14px 8px;
   }
-
-  /* Disable hover effects on touch devices */
-  .product-item:hover {
-    background: transparent;
-  }
-
-  .cat-tab:hover {
-    border-color: #CCCCCC;
-    background: #fff;
-  }
-
-  .search-input:hover {
-    border-color: #CCCCCC;
-    background: #fff;
-  }
-
-  .popover-close:hover {
-    border-color: #CCCCCC;
-    background: #fff;
-  }
-
-  #btn-menu:hover {
-    box-shadow: none;
-    transform: none;
-    border: 3px solid #CCCCCC;
-    background: #fff;
-  }
 }
 
 /* Дуже малі екрани (SE, Mini) */
