@@ -6,12 +6,12 @@
 
 /* ── Інверсія виділення тексту ───────────────────────────── */
 ::selection {
-  background: #000;
+  background: #0A0B0E;
   color: #fff;
 }
 
 ::-moz-selection {
-  background: #000;
+  background: #0A0B0E;
   color: #fff;
 }
 
@@ -66,7 +66,7 @@
   gap: 0;
 
   background: #fff;
-  border: 3px solid #CCCCCC;
+  border: 3px solid #C8C9CC;
   border-radius: 50%;
   box-shadow: none;
   color: #1a1a1a;
@@ -76,15 +76,15 @@
 #btn-menu:hover {
   box-shadow: none;
   transform: none;
-  border: 3px solid #888888;
-  background: #f5f5f5;
+  border: 3px solid #828385;
+  background: #F0F1F3;
 }
 
 #btn-menu:active {
   transform: none;
   box-shadow: none;
-  border: 3px solid #000;
-  background: #000;
+  border: 3px solid #0A0B0E;
+  background: #0A0B0E;
 }
 
 .btn-menu-emoji {
@@ -116,7 +116,7 @@
   inset: 0;
   z-index: 9000;
 
-  background: rgba(0, 0, 0, 0.42);
+  background: rgba(10, 11, 14, 0.42);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 
@@ -147,7 +147,7 @@
   max-height: 88vh;
 
   border-radius: 32px 32px 0 0;
-  box-shadow: 0 -6px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 -6px 40px rgba(10, 11, 14, 0.12);
 
   display: flex;
   flex-direction: column;
@@ -191,7 +191,7 @@
   width: 36px;
   height: 4px;
   border-radius: 2px;
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(10, 11, 14, 0.14);
 }
 
 @media (min-width: 768px) {
@@ -239,7 +239,7 @@
 .popover-close {
   width: 40px;
   height: 40px;
-  border: 3px solid #CCCCCC;
+  border: 3px solid #C8C9CC;
   border-radius: 50%;
   background: #fff;
   cursor: pointer;
@@ -253,13 +253,13 @@
 }
 
 .popover-close:hover {
-  border-color: #888888;
-  background: #E5E5E5;
+  border-color: #828385;
+  background: #E8EBED;
 }
 
 .popover-close:active {
-  border-color: #000;
-  background: #000;
+  border-color: #0A0B0E;
+  background: #0A0B0E;
   color: #fff;
 }
 
@@ -283,12 +283,12 @@
 }
 
 .search-wrap:hover .search-icon {
-  color: #888888;
+  color: #828385;
 }
 
 .search-wrap:has(.search-input:focus) .search-icon,
 .search-wrap:has(.search-input:active) .search-icon {
-  color: #000;
+  color: #0A0B0E;
 }
 
 .search-clear {
@@ -310,11 +310,11 @@
 }
 
 .search-clear:hover {
-  color: #888888;
+  color: #828385;
 }
 
 .search-clear:active {
-  color: #000;
+  color: #0A0B0E;
 }
 
 .search-wrap.has-value .search-clear {
@@ -326,7 +326,7 @@
   box-sizing: border-box;
   padding: 12px 40px 12px 40px;
   background: #fff;
-  border: 3px solid #CCCCCC;
+  border: 3px solid #C8C9CC;
   border-radius: 32px;
   font-size: 18px;
   color: #1a1a1a;
@@ -353,13 +353,13 @@
 }
 
 .search-input:hover {
-  border-color: #888888;
-  background: #f5f5f5;
+  border-color: #828385;
+  background: #F0F1F3;
 }
 
 .search-input:active,
 .search-input:focus {
-  border-color: #000;
+  border-color: #0A0B0E;
   background: #fff;
   color: #1a1a1a;
   caret-color: #1a1a1a;
@@ -380,7 +380,7 @@
 .cat-tab {
   padding: 8px 12px;
   border-radius: 32px;
-  border: 3px solid #CCCCCC;
+  border: 3px solid #C8C9CC;
   background: #fff;
   font-size: 14px;
   line-height: 20px;
@@ -394,19 +394,19 @@
 }
 
 .cat-tab:hover {
-  border-color: #888888;
+  border-color: #828385;
   background: transparent;
 }
 
 .cat-tab:active {
-  border-color: #000;
-  background: #000;
+  border-color: #0A0B0E;
+  background: #0A0B0E;
   color: #fff;
 }
 
 .cat-tab.active {
-  border-color: #000;
-  background: #000;
+  border-color: #0A0B0E;
+  background: #0A0B0E;
   color: #fff;
 }
 
@@ -418,7 +418,7 @@
   padding: 0;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  scrollbar-color: rgba(10, 11, 14, 0.1) transparent;
   scrollbar-gutter: stable;
 }
 
@@ -431,7 +431,7 @@
 }
 
 .product-list::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(10, 11, 14, 0.15);
   border-radius: 3px;
 }
 
@@ -460,7 +460,7 @@
 }
 
 .product-item:hover {
-  background: #E5E5E5;
+  background: #E8EBED;
 }
 
 .product-item:visited {
@@ -468,7 +468,7 @@
 }
 
 .product-item:active {
-  background: #000;
+  background: #0A0B0E;
 }
 
 .product-item:active .product-name,
@@ -477,11 +477,11 @@
 }
 
 .product-item:active .product-desc {
-  color: #ccc;
+  color: #C8C9CC;
 }
 
 .product-item.active {
-  background: #000;
+  background: #0A0B0E;
 }
 
 .product-item.active .product-name,
@@ -490,7 +490,7 @@
 }
 
 .product-item.active .product-desc {
-  color: #ccc;
+  color: #C8C9CC;
 }
 
 .product-item:last-child {
@@ -543,7 +543,7 @@
 
 .product-desc {
   font-size: 14px;
-  color: #888;
+  color: #828385;
   line-height: 20px;
   font-weight: 400;
   display: -webkit-box;
