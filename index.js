@@ -55,6 +55,43 @@
 
     buildCategoryTabs();
     bindEvents();
+
+    // Завантажуємо дані для меню одразу, не чекаючи відкриття
+    loadProducts();
+
+    // Показуємо кнопку меню коли Hype сцена провантажиться
+    // Hype додає event listener на window для HypeDocuments
+    waitForHypeReady();
+  }
+
+  /* ── ЧЕКАЄМО HYPE СЦЕНИ ─────────────────────────────────── */
+  function waitForHypeReady() {
+    var hypeContainer = document.getElementById('tanu_hype_container');
+
+    function showButton() {
+      el.btnMenu.parentElement.classList.add('is-visible');
+    }
+
+    // Перевіряємо чи Hype вже готовий
+    if (hypeContainer && hypeContainer.querySelector('iframe')) {
+      // Якщо iframe вже є — Hype завантажився
+      setTimeout(showButton, 100);
+      return;
+    }
+
+    // Слухаємо подію Hype про завантаження сцени
+    if ('HYPE_eventListeners' in window) {
+      window['HYPE_eventListeners'] = window['HYPE_eventListeners'] || [];
+      window['HYPE_eventListeners'].push({
+        'type': 'HypeDocumentLoad',
+        'callback': function () {
+          setTimeout(showButton, 200);
+        }
+      });
+    }
+
+    // Fallback: якщо Hype не завантажиться за 5 секунд — все одно показуємо
+    setTimeout(showButton, 5000);
   }
 
   /* ── КАТЕГОРІЇ: побудова вкладок ─────────────────────── */
@@ -208,7 +245,10 @@
     el.overlay.classList.add('is-open');
     el.overlay.removeAttribute('hidden');
     document.body.style.overflow = 'hidden';
-    loadProducts();
+    // Дані вже завантажені при init(), не треба знову викликати loadProducts()
+    if (!state.loaded) {
+      showLoading();
+    }
   }
 
   function closeMenu() {
