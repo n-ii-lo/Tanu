@@ -72,26 +72,35 @@
       el.btnMenu.parentElement.classList.add('is-visible');
     }
 
-    // Перевіряємо чи Hype вже готовий
+    // Якщо iframe вже є — Hype вже завантажився
     if (hypeContainer && hypeContainer.querySelector('iframe')) {
-      // Якщо iframe вже є — Hype завантажився
-      setTimeout(showButton, 100);
+      showButton();
       return;
     }
 
-    // Слухаємо подію Hype про завантаження сцени
-    if ('HYPE_eventListeners' in window) {
-      window['HYPE_eventListeners'] = window['HYPE_eventListeners'] || [];
-      window['HYPE_eventListeners'].push({
-        'type': 'HypeDocumentLoad',
-        'callback': function () {
-          setTimeout(showButton, 200);
+    // MutationObserver — чекаємо появи iframe в Hype контейнері
+    var observer = new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var added = mutations[i].addedNodes;
+        for (var j = 0; j < added.length; j++) {
+          if (added[j].nodeName === 'IFRAME' || (added[j].querySelector && added[j].querySelector('iframe'))) {
+            observer.disconnect();
+            showButton();
+            return;
+          }
         }
-      });
+      }
+    });
+
+    if (hypeContainer) {
+      observer.observe(hypeContainer, { childList: true, subtree: true });
     }
 
-    // Fallback: якщо Hype не завантажиться за 5 секунд — все одно показуємо
-    setTimeout(showButton, 5000);
+    // Fallback: якщо Hype не завантажиться за 3 секунди — все одно показуємо
+    setTimeout(function () {
+      observer.disconnect();
+      showButton();
+    }, 3000);
   }
 
   /* ── КАТЕГОРІЇ: побудова вкладок ─────────────────────── */
