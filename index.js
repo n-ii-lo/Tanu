@@ -71,7 +71,7 @@
     function showButton() {
       setTimeout(function () {
         el.btnMenu.parentElement.classList.add('is-visible');
-      }, 500);
+      }, 300);
     }
 
     // Якщо iframe вже є — Hype вже завантажився
