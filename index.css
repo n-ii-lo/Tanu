@@ -76,8 +76,8 @@
 #btn-menu:hover {
   box-shadow: none;
   transform: none;
-  border: 3px solid #000;
-  background: #E5E5E5;
+  border: 3px solid #888888;
+  background: #f5f5f5;
 }
 
 #btn-menu:active {
@@ -253,7 +253,7 @@
 }
 
 .popover-close:hover {
-  border-color: #000;
+  border-color: #888888;
   background: #E5E5E5;
 }
 
@@ -354,13 +354,13 @@
 
 .search-input:hover {
   border-color: #888888;
-  background: #fff;
+  background: #f5f5f5;
 }
 
 .search-input:active,
 .search-input:focus {
   border-color: #000;
-  background: #E5E5E5;
+  background: #fff;
   color: #1a1a1a;
   caret-color: #1a1a1a;
 }
