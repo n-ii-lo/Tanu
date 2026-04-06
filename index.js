@@ -183,30 +183,48 @@
     function closeMenuWithSwipe() {
       el.popover.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
       el.popover.style.transform = 'translateY(100%)';
+      // спочатку ховаємо overlay (opacity), потім скидаємо popover styles
       setTimeout(function () {
-        closeMenu();
-        // повністю скидаємо styles після закриття
-        el.popover.style.transition = '';
-        el.popover.style.transform = '';
-        hasMoved = false;
-      }, 210);
+        el.overlay.classList.remove('is-open');
+        setTimeout(function () {
+          document.body.style.overflow = '';
+          el.search.value = '';
+          state.query = '';
+          isClosing = false;
+          // скидаємо popover styles після повного закриття
+          el.popover.style.transition = '';
+          el.popover.style.transform = '';
+          hasMoved = false;
+        }, 160);
+      }, 150);
     }
   }
 
   /* ── ВІДКРИТИ / ЗАКРИТИ ─────────────────────────────────── */
+  var isClosing = false;
+
   function openMenu() {
+    if (isClosing) return;
     el.overlay.classList.add('is-open');
     el.overlay.removeAttribute('hidden');
-    document.body.style.overflow = 'hidden';   // блокуємо скрол фону
+    document.body.style.overflow = 'hidden';
     loadProducts();
   }
 
   function closeMenu() {
+    if (isClosing) return;
+    if (!el.overlay.classList.contains('is-open')) return;
+
+    isClosing = true;
     el.overlay.classList.remove('is-open');
-    document.body.style.overflow = '';         // відновлюємо скрол
-    el.search.value = '';
-    state.query = '';
-    // не скидаємо activeCategory — зручніше залишити попередній вибір
+
+    // чекаємо завершення transition (opacity 0.15s) перед відновленням скролу
+    setTimeout(function () {
+      document.body.style.overflow = '';
+      el.search.value = '';
+      state.query = '';
+      isClosing = false;
+    }, 160);
   }
 
   /* ── ЗАВАНТАЖЕННЯ ТОВАРІВ ────────────────────────────────── */
