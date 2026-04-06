@@ -534,7 +534,10 @@
 
 /* Телефон */
 @media (max-width: 480px) {
-  /* Кнопка — як оригінал */
+  #btn-menu {
+    bottom: 18px;
+    right: 18px;
+  }
 
   .popover-header {
     padding: 20px 18px 0;
