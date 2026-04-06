@@ -493,6 +493,10 @@
   color: #888;
   line-height: 20px;
   font-weight: 400;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ── Ціна (права колонка) ──────────────────────── */
@@ -544,11 +548,11 @@
   }
 
   .search-wrap {
-    margin: 0 18px 14px;
+    margin: 0 0 14px;
   }
 
   .category-tabs {
-    padding: 0 18px 14px;
+    padding: 0 0 14px;
   }
 
   .product-list-wrapper {
