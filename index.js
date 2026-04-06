@@ -66,45 +66,27 @@
 
   /* ── ЧЕКАЄМО HYPE СЦЕНИ ─────────────────────────────────── */
   function waitForHypeReady() {
-    var hypeContainer = document.getElementById('tanu_hype_container');
     var shown = false;
 
     function showButton() {
       if (shown) return;
       shown = true;
-      el.btnMenu.parentElement.classList.add('is-visible');
+      setTimeout(function () {
+        el.btnMenu.parentElement.classList.add('is-visible');
+      }, 300);
     }
 
-    // Якщо iframe вже є — Hype вже завантажився
-    if (hypeContainer && hypeContainer.querySelector('iframe')) {
+    // Показуємо кнопку коли сторінка завантажилась
+    if (document.readyState === 'complete') {
       showButton();
-      return;
+    } else {
+      window.addEventListener('load', function () {
+        showButton();
+      });
     }
 
-    // MutationObserver — чекаємо появи iframe в Hype контейнері
-    // Це відбувається за долю секунди до повного завантаження сторінки
-    var observer = new MutationObserver(function (mutations) {
-      for (var i = 0; i < mutations.length; i++) {
-        var added = mutations[i].addedNodes;
-        for (var j = 0; j < added.length; j++) {
-          if (added[j].nodeName === 'IFRAME' || (added[j].querySelector && added[j].querySelector('iframe'))) {
-            observer.disconnect();
-            showButton();
-            return;
-          }
-        }
-      }
-    });
-
-    if (hypeContainer) {
-      observer.observe(hypeContainer, { childList: true, subtree: true });
-    }
-
-    // Fallback: якщо Hype не завантажиться за 4 секунди — показуємо
-    setTimeout(function () {
-      observer.disconnect();
-      showButton();
-    }, 4000);
+    // Fallback: якщо load не спрацює за 4 секунди — показуємо
+    setTimeout(showButton, 4000);
   }
 
   /* ── КАТЕГОРІЇ: побудова вкладок ─────────────────────── */
@@ -417,11 +399,12 @@
   /* ── ФІЛЬТРАЦІЯ ─────────────────────────────────────────── */
   function getFiltered() {
     return state.products.filter(function (p) {
+      var hasImage = p.image && p.image !== '';
       var matchCat  = state.activeCategory === 'all' || p.category === state.activeCategory;
       var matchText = !state.query ||
         p.name.toLowerCase().includes(state.query) ||
         p.description.toLowerCase().includes(state.query);
-      return matchCat && matchText;
+      return hasImage && matchCat && matchText;
     });
   }
 
