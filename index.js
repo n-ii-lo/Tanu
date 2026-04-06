@@ -69,7 +69,9 @@
     var hypeContainer = document.getElementById('tanu_hype_container');
 
     function showButton() {
-      el.btnMenu.parentElement.classList.add('is-visible');
+      setTimeout(function () {
+        el.btnMenu.parentElement.classList.add('is-visible');
+      }, 500);
     }
 
     // Якщо iframe вже є — Hype вже завантажився
