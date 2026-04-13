@@ -13,8 +13,9 @@
      - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
   ─────────────────────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_BASE: 'https://your-strapi-url.com',          // ← ЗАМІНІТЬ
-    STRAPI_PATH: '/api/products?populate=*',             // ← ЗАМІНІТЬ якщо інша колекція
+    STRAPI_BASE:      'https://your-strapi-url.com',     // ← ЗАМІНІТЬ на URL Strapi Cloud
+    STRAPI_PATH:      '/api/products?populate=*',
+    API_TOKEN:        '',                                 // ← ЗАМІНІТЬ на API Token зі Strapi
     FETCH_TIMEOUT_MS: 5000
   };
 
@@ -312,7 +313,11 @@
       controller = null;
     }
 
-    var fetchOpts = controller ? { signal: controller.signal } : {};
+    var fetchHeaders = {};
+    if (CONFIG.API_TOKEN) fetchHeaders['Authorization'] = 'Bearer ' + CONFIG.API_TOKEN;
+    var fetchOpts = controller
+      ? { signal: controller.signal, headers: fetchHeaders }
+      : { headers: fetchHeaders };
 
     fetch(url, fetchOpts)
       .then(function (res) {
@@ -348,41 +353,50 @@
   function normalizeStrapi(json) {
     var base = CONFIG.STRAPI_BASE;
 
-    // Strapi v4: { data: [{ id, attributes: { ... } }] }
+    function resolveImgUrl(img) {
+      if (!img) return null;
+      // Strapi v5: img.url напряму
+      var url = img.url || (img.data && img.data.attributes && img.data.attributes.url);
+      if (!url) return null;
+      return url.startsWith('http') ? url : base + url;
+    }
+
+    function resolveCategoryKey(cat) {
+      if (!cat) return '';
+      // Strapi v5: cat — об'єкт { key, name }
+      if (typeof cat === 'object') return cat.key || slugifyCategory(cat.name || '');
+      // Strapi v4: рядок або { data: { attributes: { key } } }
+      if (cat.data && cat.data.attributes) return cat.data.attributes.key || '';
+      return slugifyCategory(String(cat));
+    }
+
+    // Strapi v5 / v4: { data: [...] }
     if (json && Array.isArray(json.data)) {
       return json.data.map(function (item) {
-        var a = item.attributes || {};
-        var imgAttr = a.image && a.image.data && a.image.data.attributes;
-        var imgUrl = null;
-        if (imgAttr && imgAttr.url) {
-          imgUrl = imgAttr.url.startsWith('http') ? imgAttr.url : base + imgAttr.url;
-        }
+        // v5: поля напряму на item; v4: у item.attributes
+        var src = (item.attributes && Object.keys(item.attributes).length) ? item.attributes : item;
         return {
           id:          item.id,
-          name:        a.title || a.name || '—',
-          category:    slugifyCategory(a.category || ''),
-          price:       a.price ? a.price + ' грн' : '',
-          description: a.description || '',
-          image:       imgUrl,
-          slug:        a.slug || String(item.id)
+          name:        src.title || src.name || '—',
+          category:    resolveCategoryKey(src.category),
+          price:       src.price ? src.price + ' грн' : '',
+          description: src.description || '',
+          image:       resolveImgUrl(src.image),
+          slug:        src.slug || String(item.id)
         };
       });
     }
 
-    // Strapi v3 / плоский масив
+    // Плоский масив (v3 або кастомний ендпоінт)
     if (Array.isArray(json)) {
       return json.map(function (item) {
-        var imgUrl = null;
-        if (item.image && item.image.url) {
-          imgUrl = item.image.url.startsWith('http') ? item.image.url : base + item.image.url;
-        }
         return {
           id:          item.id,
           name:        item.title || item.name || '—',
-          category:    slugifyCategory(item.category || ''),
+          category:    resolveCategoryKey(item.category),
           price:       item.price ? item.price + ' грн' : '',
           description: item.description || '',
-          image:       imgUrl,
+          image:       resolveImgUrl(item.image),
           slug:        item.slug || String(item.id)
         };
       });

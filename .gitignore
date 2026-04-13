@@ -18,3 +18,6 @@ index2.html
 
 # Node modules (if Strapi or other node projects added)
 node_modules/
+
+# AI assistants / IDE local state
+.qwen/
