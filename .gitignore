@@ -1,3 +1,20 @@
 /.idea
 .vercel
 .env*.local
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Backups
+backup/
+*.backup
+*.orig
+
+# Hype export temp folders
+Default.hyperesources/
+index2.html
+
+# Node modules (if Strapi or other node projects added)
+node_modules/

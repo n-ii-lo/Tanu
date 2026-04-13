@@ -66,7 +66,7 @@
   gap: 0;
 
   background: #fff;
-  border: 3px solid #C8C9CC;
+  border: none;
   border-radius: 50%;
   box-shadow: none;
   color: #0A0B0E;
@@ -76,14 +76,12 @@
 #btn-menu:hover {
   box-shadow: none;
   transform: none;
-  border: 3px solid #828385;
   background: #F0F1F3;
 }
 
 #btn-menu:active {
   transform: none;
   box-shadow: none;
-  border: 3px solid #0A0B0E;
   background: #0A0B0E;
 }
 
@@ -239,7 +237,7 @@
 .popover-close {
   width: 40px;
   height: 40px;
-  border: 3px solid #C8C9CC;
+  border: 1px solid #C8C9CC;
   border-radius: 50%;
   background: #fff;
   cursor: pointer;
@@ -326,7 +324,7 @@
   box-sizing: border-box;
   padding: 12px 40px 12px 40px;
   background: #fff;
-  border: 3px solid #C8C9CC;
+  border: 1px solid #C8C9CC;
   border-radius: 32px;
   font-size: 18px;
   color: #0A0B0E;
@@ -380,7 +378,7 @@
 .cat-tab {
   padding: 8px 12px;
   border-radius: 32px;
-  border: 3px solid #C8C9CC;
+  border: 1px solid #C8C9CC;
   background: #fff;
   font-size: 14px;
   line-height: 20px;
@@ -544,7 +542,7 @@
 .product-desc {
   font-size: 14px;
   color: #828385;
-  line-height: 20px;
+  line-height: 18px;
   font-weight: 400;
   display: -webkit-box;
   -webkit-line-clamp: 2;
