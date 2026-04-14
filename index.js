@@ -302,7 +302,7 @@
 
     showLoading();
 
-    var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH;
+    var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH + '&t=' + Date.now();
     var controller;
     var timer;
 
