@@ -13,9 +13,9 @@
      - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
   ─────────────────────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com/',     // ← ЗАМІНІТЬ на URL Strapi Cloud
+    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com',     // ← БЕЗ слеша в кінці
     STRAPI_PATH:      '/api/products?populate=*',
-    API_TOKEN:        '83a7e8b445e4af9f049ebfa007cd808120001531639e790761d33655dfc1f3be9fd419eb8b12f1908164d569571c38cfa00f0f73f1d1d8553e15a3fe9306834d88fe4cc070acf2aed23e9519e8945d00e3cd57f4aa69a8bd576f99d9fbba5668193049f2e5c8984c7943801b0218aaca7426155aabf5e5a4941e9377fb91dbd1',                                 // ← ЗАМІНІТЬ на API Token зі Strapi
+    API_TOKEN:        'd2fc9ed334b94663610b346f93a18b2bf4044217840d0c884f4cd3eb6f2bde4e2bf06c848409edf8724997e2e67666258df257bc1df7255c3919a9bf12be9144c64e138401466f0a2a44efd5267abb2212354550c8d8ef892e97f8f7e373eb2afaa3007f4fc04179f28afb26889b267f37c7f181ed5589b84f7cc3db7d009039',
     FETCH_TIMEOUT_MS: 5000
   };
 
@@ -302,7 +302,7 @@
 
     showLoading();
 
-    var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH + '&t=' + Date.now();
+    var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH;
     var controller;
     var timer;
 
