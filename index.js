@@ -16,7 +16,7 @@
     STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com',     // ← БЕЗ слеша в кінці
     STRAPI_PATH:      '/api/products?populate=*',
     API_TOKEN:        'd2fc9ed334b94663610b346f93a18b2bf4044217840d0c884f4cd3eb6f2bde4e2bf06c848409edf8724997e2e67666258df257bc1df7255c3919a9bf12be9144c64e138401466f0a2a44efd5267abb2212354550c8d8ef892e97f8f7e373eb2afaa3007f4fc04179f28afb26889b267f37c7f181ed5589b84f7cc3db7d009039',
-    FETCH_TIMEOUT_MS: 5000
+    FETCH_TIMEOUT_MS: 10000
   };
 
   /* ── КАТЕГОРІЇ ─────────────────────────────────────────── */
@@ -303,36 +303,25 @@
     showLoading();
 
     var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH;
-    var controller;
-    var timer;
-
-    try {
-      controller = new AbortController();
-      timer = setTimeout(function () { controller.abort(); }, CONFIG.FETCH_TIMEOUT_MS);
-    } catch (_) {
-      controller = null;
-    }
-
     var fetchHeaders = {};
     if (CONFIG.API_TOKEN) fetchHeaders['Authorization'] = 'Bearer ' + CONFIG.API_TOKEN;
-    var fetchOpts = controller
-      ? { signal: controller.signal, headers: fetchHeaders }
-      : { headers: fetchHeaders };
 
-    fetch(url, fetchOpts)
+    console.log('[TANU] Fetching:', url);
+
+    fetch(url, { headers: fetchHeaders })
       .then(function (res) {
-        clearTimeout(timer);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       })
       .then(function (json) {
+        console.log('[TANU] Strapi response:', json);
         state.products = normalizeStrapi(json);
         if (state.products.length === 0) throw new Error('Empty response');
         state.loaded = true;
         renderProducts();
       })
       .catch(function (err) {
-        clearTimeout(timer);
+        console.error('[TANU] Strapi error:', err);
         console.warn('[TANU] Strapi недоступний, використовую fallback:', err.message);
         useFallback();
       });
