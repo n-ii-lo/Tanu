@@ -13,9 +13,9 @@
      - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
   ─────────────────────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_BASE:      'https://your-strapi-url.com',     // ← ЗАМІНІТЬ на URL Strapi Cloud
+    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com/',     // ← ЗАМІНІТЬ на URL Strapi Cloud
     STRAPI_PATH:      '/api/products?populate=*',
-    API_TOKEN:        '',                                 // ← ЗАМІНІТЬ на API Token зі Strapi
+    API_TOKEN:        '83a7e8b445e4af9f049ebfa007cd808120001531639e790761d33655dfc1f3be9fd419eb8b12f1908164d569571c38cfa00f0f73f1d1d8553e15a3fe9306834d88fe4cc070acf2aed23e9519e8945d00e3cd57f4aa69a8bd576f99d9fbba5668193049f2e5c8984c7943801b0218aaca7426155aabf5e5a4941e9377fb91dbd1',                                 // ← ЗАМІНІТЬ на API Token зі Strapi
     FETCH_TIMEOUT_MS: 5000
   };
 
