@@ -302,7 +302,9 @@
 
     showLoading();
 
-    var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH;
+    // Додаємо timestamp для обходу кэшу браузера
+    var cacheBuster = '_t=' + Date.now();
+    var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH + '&' + cacheBuster;
     var fetchHeaders = {};
     if (CONFIG.API_TOKEN) fetchHeaders['Authorization'] = 'Bearer ' + CONFIG.API_TOKEN;
 
@@ -310,13 +312,24 @@
 
     fetch(url, { headers: fetchHeaders })
       .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (!res.ok) {
+          // 403 Forbidden — детальне повідомлення для дебагу
+          if (res.status === 403) {
+            console.error('[TANU] 403 Forbidden: Перевірте налаштування Strapi API Permissions.');
+            console.error('[TANU] Потрібно: Settings -> Roles -> Public -> Product (find, findOne) -> Save');
+            throw new Error('403 Forbidden: API доступ заборонено. Перевірте Strapi Admin Panel.');
+          }
+          throw new Error('HTTP ' + res.status);
+        }
         return res.json();
       })
       .then(function (json) {
         console.log('[TANU] Strapi response:', json);
         state.products = normalizeStrapi(json);
-        if (state.products.length === 0) throw new Error('Empty response');
+        if (state.products.length === 0) {
+          console.warn('[TANU] Empty products array from Strapi');
+          throw new Error('Empty response');
+        }
         state.loaded = true;
         renderProducts();
       })
@@ -344,18 +357,38 @@
 
     function resolveImgUrl(img) {
       if (!img) return null;
+      
       // Strapi v5: img.url напряму
-      var url = img.url || (img.data && img.data.attributes && img.data.attributes.url);
+      var url = img.url || 
+                // Strapi v5 nested: img.data.attributes.url
+                (img.data && img.data.attributes && img.data.attributes.url) ||
+                // Strapi v4: img.data.attributes.url
+                (img.attributes && img.attributes.url);
+      
       if (!url) return null;
       return url.startsWith('http') ? url : base + url;
     }
 
     function resolveCategoryKey(cat) {
       if (!cat) return '';
-      // Strapi v5: cat — об'єкт { key, name }
-      if (typeof cat === 'object') return cat.key || slugifyCategory(cat.name || '');
+      
+      // Strapi v5: cat — об'єкт { key, name, slug }
+      if (typeof cat === 'object') {
+        // Пряме поле key або slug
+        if (cat.key) return cat.key;
+        if (cat.slug) return cat.slug;
+        // Якщо це relation з Strapi v5
+        if (cat.data) return resolveCategoryKey(cat.data);
+        // Fallback: slugify назви
+        return slugifyCategory(cat.name || '');
+      }
+      
       // Strapi v4: рядок або { data: { attributes: { key } } }
-      if (cat.data && cat.data.attributes) return cat.data.attributes.key || '';
+      if (cat.data && cat.data.attributes) {
+        return cat.data.attributes.key || cat.data.attributes.slug || '';
+      }
+      
+      // Проста рядкова назва
       return slugifyCategory(String(cat));
     }
 
@@ -364,13 +397,14 @@
       return json.data.map(function (item) {
         // v5: поля напряму на item; v4: у item.attributes
         var src = (item.attributes && Object.keys(item.attributes).length) ? item.attributes : item;
+        
         return {
           id:          item.id,
-          name:        src.title || src.name || '—',
+          name:        src.title || src.name || src.productName || '—',
           category:    resolveCategoryKey(src.category),
-          price:       src.price ? src.price + ' грн' : '',
-          description: src.description || '',
-          image:       resolveImgUrl(src.image),
+          price:       src.price ? String(src.price) + ' грн' : '',
+          description: src.description || src.desc || '',
+          image:       resolveImgUrl(src.image || src.photo || src.photos),
           slug:        src.slug || String(item.id)
         };
       });
@@ -381,11 +415,11 @@
       return json.map(function (item) {
         return {
           id:          item.id,
-          name:        item.title || item.name || '—',
+          name:        item.title || item.name || item.productName || '—',
           category:    resolveCategoryKey(item.category),
-          price:       item.price ? item.price + ' грн' : '',
-          description: item.description || '',
-          image:       resolveImgUrl(item.image),
+          price:       item.price ? String(item.price) + ' грн' : '',
+          description: item.description || item.desc || '',
+          image:       resolveImgUrl(item.image || item.photo || item.photos),
           slug:        item.slug || String(item.id)
         };
       });
