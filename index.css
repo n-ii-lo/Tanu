@@ -65,18 +65,20 @@
   padding: 0;
   gap: 0;
 
-  background: #F0F1F3;
-  border: none;
+  background: #FFFFFF;
+  border: 1px solid #0A0B0E;
   border-radius: 50%;
   box-shadow: none;
   color: #0A0B0E;
   text-align: center;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 #btn-menu:hover {
   box-shadow: none;
   transform: none;
-  background: #E6E7EA;
+  background: #F0F1F3;
+  border-color: #828385;
 }
 
 #btn-menu:active {
