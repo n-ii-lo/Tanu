@@ -13,7 +13,7 @@
      - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
   ─────────────────────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com',     // ← БЕЗ слеша в кінці
+    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com/admin',     // ← БЕЗ слеша в кінці
     STRAPI_PATH:      '/api/products?populate=*',
     API_TOKEN:        'd2fc9ed334b94663610b346f93a18b2bf4044217840d0c884f4cd3eb6f2bde4e2bf06c848409edf8724997e2e67666258df257bc1df7255c3919a9bf12be9144c64e138401466f0a2a44efd5267abb2212354550c8d8ef892e97f8f7e373eb2afaa3007f4fc04179f28afb26889b267f37c7f181ed5589b84f7cc3db7d009039',
     FETCH_TIMEOUT_MS: 10000
@@ -357,21 +357,21 @@
 
     function resolveImgUrl(img) {
       if (!img) return null;
-      
+
       // Strapi v5: img.url напряму
-      var url = img.url || 
+      var url = img.url ||
                 // Strapi v5 nested: img.data.attributes.url
                 (img.data && img.data.attributes && img.data.attributes.url) ||
                 // Strapi v4: img.data.attributes.url
                 (img.attributes && img.attributes.url);
-      
+
       if (!url) return null;
       return url.startsWith('http') ? url : base + url;
     }
 
     function resolveCategoryKey(cat) {
       if (!cat) return '';
-      
+
       // Strapi v5: cat — об'єкт { key, name, slug }
       if (typeof cat === 'object') {
         // Пряме поле key або slug
@@ -382,12 +382,12 @@
         // Fallback: slugify назви
         return slugifyCategory(cat.name || '');
       }
-      
+
       // Strapi v4: рядок або { data: { attributes: { key } } }
       if (cat.data && cat.data.attributes) {
         return cat.data.attributes.key || cat.data.attributes.slug || '';
       }
-      
+
       // Проста рядкова назва
       return slugifyCategory(String(cat));
     }
@@ -397,7 +397,7 @@
       return json.data.map(function (item) {
         // v5: поля напряму на item; v4: у item.attributes
         var src = (item.attributes && Object.keys(item.attributes).length) ? item.attributes : item;
-        
+
         return {
           id:          item.id,
           name:        src.title || src.name || src.productName || '—',
