@@ -13,9 +13,9 @@
      - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
   ─────────────────────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com/admin',     // ← БЕЗ слеша в кінці
-    STRAPI_PATH:      '/api/products?populate=*',
-    API_TOKEN:        'd2fc9ed334b94663610b346f93a18b2bf4044217840d0c884f4cd3eb6f2bde4e2bf06c848409edf8724997e2e67666258df257bc1df7255c3919a9bf12be9144c64e138401466f0a2a44efd5267abb2212354550c8d8ef892e97f8f7e373eb2afaa3007f4fc04179f28afb26889b267f37c7f181ed5589b84f7cc3db7d009039',
+    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com',           // ← ВИДАЛЕНО /admin
+    STRAPI_PATH:      '/api/products?populate=*&publicationState=live',
+    API_TOKEN:        '52b9f7f4b09a1d583aeb6a658e011a026a0b9228dec1d5000068fb37b777af19b01726385cc8f5b8f7903f94a5eb4e9c878ab47d55e5db0b9e7493f752b81b14971ba32e3a52b9df4b4b8aeb2f16dd3ae20e93a3617b162145411fe6b1cb3a5910f0391f18ab6834965cad8fdaef30a83a5daee8e6cf322a28fd8aef6161b04f',
     FETCH_TIMEOUT_MS: 10000
   };
 
@@ -313,11 +313,12 @@
     fetch(url, { headers: fetchHeaders })
       .then(function (res) {
         if (!res.ok) {
-          // 403 Forbidden — детальне повідомлення для дебагу
           if (res.status === 403) {
-            console.error('[TANU] 403 Forbidden: Перевірте налаштування Strapi API Permissions.');
-            console.error('[TANU] Потрібно: Settings -> Roles -> Public -> Product (find, findOne) -> Save');
-            throw new Error('403 Forbidden: API доступ заборонено. Перевірте Strapi Admin Panel.');
+            return res.json().then(function(errData) {
+              console.error('[TANU] 403 Forbidden Error details:', errData);
+              console.error('[TANU] Потрібно перевірити: \n1. Settings -> Roles -> Public -> Product (find, findOne)\n2. Чи дійсний API_TOKEN у Strapi Cloud');
+              throw new Error('403 Forbidden: Доступ заборонено.');
+            });
           }
           throw new Error('HTTP ' + res.status);
         }
