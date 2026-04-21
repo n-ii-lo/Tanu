@@ -572,11 +572,22 @@
 
 /* ── Порожній стан (нічого не знайдено) ──────────────────── */
 .empty-state {
-  padding: 48px 20px;
+  padding: 64px 24px;
   text-align: center;
-  color: #aaa;
-  font-size: 14px;
-  line-height: 1.6;
+  color: #0A0B0E;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.empty-state small {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #828385;
+  margin-top: 8px;
+  display: block;
 }
 
 /* ============================================================
