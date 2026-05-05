@@ -1,5 +1,6 @@
 /.idea
 .vercel
+.env
 .env*.local
 
 # macOS
@@ -16,14 +17,17 @@ backup/
 Default.hyperesources/
 index2.html
 
-# Node modules (if Strapi or other node projects added)
+# Node modules
 node_modules/
+strapi/node_modules/
 
-# AI assistants / IDE local state
-.qwen/
+# Local tools
+инструменты/*
+!инструменты/README.md
 
 # Strapi backend - local state
 strapi/.env
+strapi/.git/
 strapi/.tmp/
 strapi/build/
 strapi/dist/

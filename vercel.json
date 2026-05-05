@@ -1,14 +1,7 @@
 {
-  "builds": [
-    {
-      "src": "**",
-      "use": "@vercel/static"
+  "functions": {
+    "api/strapi-products.js": {
+      "maxDuration": 10
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  }
 }

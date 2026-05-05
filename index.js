@@ -7,15 +7,15 @@
   'use strict';
 
   /* ── КОНФІГУРАЦІЯ ──────────────────────────────────────────
-     Замініть наступні значення на реальні URL:
-     - STRAPI_BASE: базовий URL вашого Strapi (без слеша в кінці)
-     - STRAPI_PATH: шлях до колекції товарів
+     STRAPI_ORIGIN — публічний URL Strapi (для картинок у відповіді API).
+     Дані товарів браузер бере з нашого ж домена: /api/strapi-products (проксі на Vercel).
+     Токен зберігається лише в STRAPI_API_TOKEN на сервері Vercel, не в Git і не в JS.
+     Локально: npm run dev (vercel dev) + .env.local з STRAPI_URL та STRAPI_API_TOKEN.
      - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
   ─────────────────────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_BASE:      '',
-    STRAPI_PATH:      '/api/products?populate=*&publicationState=live',
-    API_TOKEN:        '',
+    STRAPI_ORIGIN:    'https://ethical-ducks-4acd25e036.strapiapp.com',
+    STRAPI_PATH:      '/api/strapi-products?populate=*&publicationState=live',
     FETCH_TIMEOUT_MS: 10000
   };
 
@@ -304,19 +304,17 @@
 
     // Додаємо timestamp для обходу кэшу браузера
     var cacheBuster = '_t=' + Date.now();
-    var url = CONFIG.STRAPI_BASE + CONFIG.STRAPI_PATH + '&' + cacheBuster;
-    var fetchHeaders = {};
-    if (CONFIG.API_TOKEN) fetchHeaders['Authorization'] = 'Bearer ' + CONFIG.API_TOKEN;
+    var url = CONFIG.STRAPI_PATH + '&' + cacheBuster;
 
     console.log('[TANU] Fetching:', url);
 
-    fetch(url, { headers: fetchHeaders })
+    fetch(url)
       .then(function (res) {
         if (!res.ok) {
           if (res.status === 403) {
             return res.json().then(function(errData) {
               console.error('[TANU] 403 Forbidden Error details:', errData);
-              console.error('[TANU] Потрібно перевірити: \n1. Settings -> Roles -> Public -> Product (find, findOne)\n2. Чи дійсний API_TOKEN у Strapi Cloud');
+              console.error('[TANU] Потрібно перевірити: \n1. Права Strapi / API token на сервері (Vercel env)\n2. Змінні STRAPI_URL та STRAPI_API_TOKEN у проєкті Vercel');
               throw new Error('403 Forbidden: Доступ заборонено.');
             });
           }
@@ -354,7 +352,7 @@
 
   /* ── НОРМАЛІЗАЦІЯ ВІДПОВІДІ STRAPI ──────────────────────── */
   function normalizeStrapi(json) {
-    var base = CONFIG.STRAPI_BASE;
+    var base = CONFIG.STRAPI_ORIGIN;
 
     function resolveImgUrl(img) {
       if (!img) return null;
@@ -447,27 +445,12 @@
   }
 
   /* ── РАНДОМНІ КАРТИНКИ З FALLBACK ───────────────────────── */
-  // Доступні картинки з fallback-data.js для підстановки замість сірого квадрата
-  var FALLBACK_IMAGES = [
-    "Tanu.hyperesources/тайський чай.png",
-    "Tanu.hyperesources/матча + полуниця.png",
-    "Tanu.hyperesources/кунжут чорний.png",
-    "Tanu.hyperesources/макадамія.png",
-    "Tanu.hyperesources/анчан.png",
-    "Tanu.hyperesources/малина.png",
-    "Tanu.hyperesources/манго.png",
-    "Tanu.hyperesources/гранат.png",
-    "Tanu.hyperesources/жасмин + порічка.png",
-    "Tanu.hyperesources/полуниця + базилік.png",
-    "Tanu.hyperesources/персик + розмарин.png",
-    "Tanu.hyperesources/йогурт + лохина.png",
-    "Tanu.hyperesources/куркума.png",
-    "Tanu.hyperesources/тану_6511.png",
-    "Tanu.hyperesources/тану_6511-1.png",
-    "Tanu.hyperesources/тану24_5328.png"
-  ];
+  var FALLBACK_IMAGES = (window.TANU_FALLBACK_PRODUCTS || [])
+    .map(function (item) { return item.image; })
+    .filter(Boolean);
 
   function getRandomImage() {
+    if (FALLBACK_IMAGES.length === 0) return '';
     return FALLBACK_IMAGES[Math.floor(Math.random() * FALLBACK_IMAGES.length)];
   }
 

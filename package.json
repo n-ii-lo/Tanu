@@ -2,6 +2,10 @@
   "name": "tanu-ice-cream",
   "version": "1.0.0",
   "scripts": {
-    "dev": "npx live-server --port=3000 --no-browser"
+    "dev": "npx vercel dev --listen 3000",
+    "dev:static": "npx live-server --port=3000 --no-browser"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
