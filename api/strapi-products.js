@@ -1,7 +1,5 @@
-/**
- * Server-side proxy: adds Strapi API token from env (never exposed to the browser).
- * GET /api/strapi-products?<same query as Strapi /api/products>
- */
+const { proxyStrapiProducts } = require("../lib/strapi-products-proxy");
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.status(405).setHeader('Allow', 'GET, HEAD').json({
@@ -11,47 +9,22 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const base = process.env.STRAPI_URL && String(process.env.STRAPI_URL).replace(/\/$/, '');
-  const token = process.env.STRAPI_API_TOKEN;
+  const upstream = await proxyStrapiProducts({
+    host: req.headers.host,
+    method: req.method,
+    url: req.url,
+  });
 
-  if (!base || !token) {
-    res.status(500).json({
-      data: null,
-      error: {
-        status: 500,
-        name: 'ConfigurationError',
-        message: 'Missing STRAPI_URL or STRAPI_API_TOKEN on the server',
-      },
-    });
+  res.status(upstream.status);
+
+  Object.entries(upstream.headers).forEach(([key, value]) => {
+    res.setHeader(key, value);
+  });
+
+  if (req.method === 'HEAD') {
+    res.end();
     return;
   }
 
-  try {
-    const host = req.headers.host || 'localhost';
-    const incoming = new URL(req.url || '/', `http://${host}`);
-    const forwardQs = incoming.search || '';
-    const targetUrl = `${base}/api/products${forwardQs}`;
-
-    const upstream = await fetch(targetUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-      },
-    });
-
-    const text = await upstream.text();
-    const ct = upstream.headers.get('content-type') || 'application/json';
-    res.status(upstream.status).setHeader('Content-Type', ct).send(text);
-  } catch (err) {
-    console.error('[strapi-products proxy]', err);
-    res.status(502).json({
-      data: null,
-      error: {
-        status: 502,
-        name: 'BadGateway',
-        message: 'Upstream Strapi request failed',
-      },
-    });
-  }
+  res.send(upstream.body);
 };

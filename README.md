@@ -16,7 +16,7 @@
 
 Теперь env разделен нормально:
 
-- `.env.local` — только фронт и `vercel dev`
+- `.env.local` — локальный dev server и Vercel functions
 - `strapi/.env` — только backend Strapi
 
 `APP_KEYS`, `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`, `TRANSFER_TOKEN_SALT`, `ENCRYPTION_KEY`, `JWT_SECRET` лежат в `strapi/.env`.
@@ -24,6 +24,11 @@
 `STRAPI_URL` и `STRAPI_API_TOKEN` лежат в `.env.local`.
 
 Если Strapi крутится в Strapi Cloud, эти же backend-переменные должны быть продублированы в Variables проекта.
+
+## Запуск
+
+- `npm run dev` — локальный сервер на `http://localhost:3000` со статикой и `/api/strapi-products`
+- `npm run dev:vercel` — локальная эмуляция через `vercel dev`, если нужно проверить поведение именно Vercel
 
 ## Каталог
 

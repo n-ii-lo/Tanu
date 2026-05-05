@@ -1,4 +1,6 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "devCommand": "node scripts/static-server.js",
   "functions": {
     "api/strapi-products.js": {
       "maxDuration": 10
