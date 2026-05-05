@@ -13,9 +13,9 @@
      - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
   ─────────────────────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_BASE:      'https://brilliant-butterfly-87018121a7.strapiapp.com',           // ← ВИДАЛЕНО /admin
+    STRAPI_BASE:      '',
     STRAPI_PATH:      '/api/products?populate=*&publicationState=live',
-    API_TOKEN:        '52b9f7f4b09a1d583aeb6a658e011a026a0b9228dec1d5000068fb37b777af19b01726385cc8f5b8f7903f94a5eb4e9c878ab47d55e5db0b9e7493f752b81b14971ba32e3a52b9df4b4b8aeb2f16dd3ae20e93a3617b162145411fe6b1cb3a5910f0391f18ab6834965cad8fdaef30a83a5daee8e6cf322a28fd8aef6161b04f',
+    API_TOKEN:        '',
     FETCH_TIMEOUT_MS: 10000
   };
 

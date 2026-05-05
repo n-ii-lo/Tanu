@@ -22,9 +22,11 @@ node_modules/
 # AI assistants / IDE local state
 .qwen/
 
-# Strapi backend - build artifacts and local state
-tanu-strapi-backend/.strapi-updater.json
-tanu-strapi-backend/.strapi/
-tanu-strapi-backend/build/
-tanu-strapi-backend/package-lock.json
-tanu-strapi-backend/config/admin.js
+# Strapi backend - local state
+strapi/.env
+strapi/.tmp/
+strapi/build/
+strapi/dist/
+strapi/.strapi/
+strapi/.strapi-updater.json
+strapi/.strapi-cloud.json
