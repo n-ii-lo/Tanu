@@ -1,21 +1,13 @@
 /* ============================================================
-   TANU — index.js
-   Попover-меню морозива: Strapi API, пошук, категорії, fallback
-   ============================================================ */
+  TANU — index.js
+  Попover-меню морозива: локальний каталог, пошук, категорії
+  ============================================================ */
 
 (function () {
   'use strict';
 
-  /* ── КОНФІГУРАЦІЯ ──────────────────────────────────────────
-     STRAPI_ORIGIN — публічний URL Strapi (для картинок у відповіді API).
-     Дані товарів браузер бере з нашого ж домена: /api/strapi-products (проксі на Vercel).
-     Токен зберігається лише в STRAPI_API_TOKEN на сервері Vercel, не в Git і не в JS.
-     Локально: npm run dev (vercel dev) + .env.local з STRAPI_URL та STRAPI_API_TOKEN.
-     - BOND_URL:    посилання на сторінку замовлення в Бонд-магазині
-  ─────────────────────────────────────────────────────────── */
+  /* ── КОНФІГУРАЦІЯ ────────────────────────────────────────── */
   var CONFIG = {
-    STRAPI_ORIGIN:    'https://ethical-ducks-4acd25e036.strapiapp.com',
-    STRAPI_PATH:      '/api/strapi-products?populate=*&publicationState=live',
     FETCH_TIMEOUT_MS: 10000
   };
 
@@ -301,42 +293,7 @@
     }
 
     showLoading();
-
-    // Додаємо timestamp для обходу кэшу браузера
-    var cacheBuster = '_t=' + Date.now();
-    var url = CONFIG.STRAPI_PATH + '&' + cacheBuster;
-
-    console.log('[TANU] Fetching:', url);
-
-    fetch(url)
-      .then(function (res) {
-        if (!res.ok) {
-          if (res.status === 403) {
-            return res.json().then(function(errData) {
-              console.error('[TANU] 403 Forbidden Error details:', errData);
-              console.error('[TANU] Потрібно перевірити: \n1. Права Strapi / API token на сервері (Vercel env)\n2. Змінні STRAPI_URL та STRAPI_API_TOKEN у проєкті Vercel');
-              throw new Error('403 Forbidden: Доступ заборонено.');
-            });
-          }
-          throw new Error('HTTP ' + res.status);
-        }
-        return res.json();
-      })
-      .then(function (json) {
-        console.log('[TANU] Strapi response:', json);
-        state.products = normalizeStrapi(json);
-        if (state.products.length === 0) {
-          console.warn('[TANU] Empty products array from Strapi');
-          throw new Error('Empty response');
-        }
-        state.loaded = true;
-        renderProducts();
-      })
-      .catch(function (err) {
-        console.error('[TANU] Strapi error:', err);
-        console.warn('[TANU] Strapi недоступний, використовую fallback:', err.message);
-        useFallback();
-      });
+    useFallback();
   }
 
   function useFallback() {
@@ -348,88 +305,6 @@
     }
     state.loaded = true;
     renderProducts();
-  }
-
-  /* ── НОРМАЛІЗАЦІЯ ВІДПОВІДІ STRAPI ──────────────────────── */
-  function normalizeStrapi(json) {
-    var base = CONFIG.STRAPI_ORIGIN;
-
-    function resolveImgUrl(img) {
-      if (!img) return null;
-
-      // Strapi v5: img.url напряму
-      var url = img.url ||
-                // Strapi v5 nested: img.data.attributes.url
-                (img.data && img.data.attributes && img.data.attributes.url) ||
-                // Strapi v4: img.data.attributes.url
-                (img.attributes && img.attributes.url);
-
-      if (!url) return null;
-      return url.startsWith('http') ? url : base + url;
-    }
-
-    function resolveCategoryKey(cat) {
-      if (!cat) return '';
-
-      // Strapi v5: cat — об'єкт { key, name, slug }
-      if (typeof cat === 'object') {
-        // Пряме поле key або slug
-        if (cat.key) return cat.key;
-        if (cat.slug) return cat.slug;
-        // Якщо це relation з Strapi v5
-        if (cat.data) return resolveCategoryKey(cat.data);
-        // Fallback: slugify назви
-        return slugifyCategory(cat.name || '');
-      }
-
-      // Strapi v4: рядок або { data: { attributes: { key } } }
-      if (cat.data && cat.data.attributes) {
-        return cat.data.attributes.key || cat.data.attributes.slug || '';
-      }
-
-      // Проста рядкова назва
-      return slugifyCategory(String(cat));
-    }
-
-    // Strapi v5 / v4: { data: [...] }
-    if (json && Array.isArray(json.data)) {
-      return json.data.map(function (item) {
-        // v5: поля напряму на item; v4: у item.attributes
-        var src = (item.attributes && Object.keys(item.attributes).length) ? item.attributes : item;
-
-        return {
-          id:          item.id,
-          name:        src.title || src.name || src.productName || '—',
-          category:    resolveCategoryKey(src.category),
-          price:       src.price ? String(src.price) + ' грн' : '',
-          description: src.description || src.desc || '',
-          image:       resolveImgUrl(src.image || src.photo || src.photos),
-          slug:        src.slug || String(item.id)
-        };
-      });
-    }
-
-    // Плоский масив (v3 або кастомний ендпоінт)
-    if (Array.isArray(json)) {
-      return json.map(function (item) {
-        return {
-          id:          item.id,
-          name:        item.title || item.name || item.productName || '—',
-          category:    resolveCategoryKey(item.category),
-          price:       item.price ? String(item.price) + ' грн' : '',
-          description: item.description || item.desc || '',
-          image:       resolveImgUrl(item.image || item.photo || item.photos),
-          slug:        item.slug || String(item.id)
-        };
-      });
-    }
-
-    return [];
-  }
-
-  // Перетворює назву категорії на ключ (напр. "Ice Cream" → "ice-cream")
-  function slugifyCategory(str) {
-    return String(str).trim().toLowerCase().replace(/\s+/g, '-');
   }
 
   /* ── ФІЛЬТРАЦІЯ ─────────────────────────────────────────── */
@@ -506,7 +381,7 @@
   }
 
   /* ── УТИЛІТИ ────────────────────────────────────────────── */
-  // Екранування HTML (захист від XSS при вставці даних зі Strapi)
+  // Екранування HTML (захист від XSS при вставці даних каталогу)
   function esc(str) {
     return String(str)
       .replace(/&/g,  '&amp;')

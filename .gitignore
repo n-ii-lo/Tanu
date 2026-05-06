@@ -19,18 +19,8 @@ index2.html
 
 # Node modules
 node_modules/
-strapi/node_modules/
 
 # Local tools
 инструменты/*
 !инструменты/README.md
 
-# Strapi backend - local state
-strapi/.env
-strapi/.git/
-strapi/.tmp/
-strapi/build/
-strapi/dist/
-strapi/.strapi/
-strapi/.strapi-updater.json
-strapi/.strapi-cloud.json

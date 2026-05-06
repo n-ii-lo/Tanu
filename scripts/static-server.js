@@ -1,7 +1,6 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const { proxyStrapiProducts } = require("../lib/strapi-products-proxy");
 
 const rootDir = path.resolve(__dirname, "..");
 const port = Number(process.env.PORT || 3000);
@@ -100,22 +99,6 @@ function resolveRequestPath(urlPath) {
   return path.join(rootDir, "index.html");
 }
 
-async function handleStrapiProxy(req, res) {
-  const upstream = await proxyStrapiProducts({
-    host: req.headers.host,
-    method: req.method,
-    url: req.url,
-  });
-
-  const headers = { ...upstream.headers };
-
-  if (req.method !== "HEAD") {
-    headers["Content-Length"] = Buffer.byteLength(upstream.body);
-  }
-
-  send(res, upstream.status, headers, req.method === "HEAD" ? "" : upstream.body);
-}
-
 loadLocalEnv();
 
 const server = http.createServer((req, res) => {
@@ -126,13 +109,6 @@ const server = http.createServer((req, res) => {
 
   if (req.method !== "GET" && req.method !== "HEAD") {
     send(res, 405, { "Content-Type": "text/plain; charset=utf-8" }, "Method Not Allowed");
-    return;
-  }
-
-  const pathname = new URL(req.url, "http://localhost").pathname;
-
-  if (pathname === "/api/strapi-products") {
-    handleStrapiProxy(req, res);
     return;
   }
 
