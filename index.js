@@ -293,7 +293,56 @@
     }
 
     showLoading();
-    useFallback();
+
+    fetch('/api/strapi-products?populate=*&pagination[pageSize]=100&sort=sortOrder:asc')
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();
+      })
+      .then(function (payload) {
+        if (!payload || !Array.isArray(payload.data) || payload.data.length === 0) {
+          throw new Error('Empty Strapi response');
+        }
+        state.products = payload.data.map(mapStrapiProduct).filter(Boolean);
+        state.loaded = true;
+        console.log('[products] loaded from Strapi:', state.products.length);
+        renderProducts();
+      })
+      .catch(function (error) {
+        console.warn('[products] Strapi fetch failed, using fallback:', error.message);
+        useFallback();
+      });
+  }
+
+  function mapStrapiProduct(item) {
+    if (!item || !item.attributes) return null;
+    var attributes = item.attributes;
+    var categoryKey = attributes.category &&
+      attributes.category.data &&
+      attributes.category.data.attributes &&
+      attributes.category.data.attributes.key;
+
+    return {
+      id: item.id,
+      name: attributes.name,
+      category: categoryKey || '',
+      price: attributes.price,
+      description: attributes.description || '',
+      slug: attributes.slug,
+      image: resolveImage(attributes)
+    };
+  }
+
+  function resolveImage(attributes) {
+    var media = attributes.image && attributes.image.data;
+    if (media && media.attributes && media.attributes.url) {
+      return media.attributes.url;
+    }
+    var fallback = window.TANU_FALLBACK_PRODUCTS || [];
+    for (var i = 0; i < fallback.length; i++) {
+      if (fallback[i].slug === attributes.slug) return fallback[i].image;
+    }
+    return '';
   }
 
   function useFallback() {
