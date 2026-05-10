@@ -1,7 +1,12 @@
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
+
 const http = require("http");
 const fs = require("fs");
-const path = require("path");
 const { proxyStrapiProducts } = require("../lib/strapi-products-proxy");
+
+console.log("[env] STRAPI_URL:", process.env.STRAPI_URL || "(missing)");
+console.log("[env] STRAPI_API_TOKEN:", process.env.STRAPI_API_TOKEN ? `set (${process.env.STRAPI_API_TOKEN.length} chars)` : "(missing)");
 
 const rootDir = path.resolve(__dirname, "..");
 const port = Number(process.env.PORT || 3000);
