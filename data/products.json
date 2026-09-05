@@ -1,0 +1,108 @@
+{
+  "products": [
+    {
+      "name": "Макадамія",
+      "category": "ice-cream",
+      "price": 100,
+      "description": "Вершкове морозиво з шматочками горіхів макадамії та медом",
+      "image": "/assets/products/makadamiia.png",
+      "available": true
+    },
+    {
+      "name": "Анчан",
+      "category": "ice-cream",
+      "price": 90,
+      "description": "Блакитне морозиво з квіток метелика з делікатним квітковим смаком",
+      "image": "/assets/products/anchan.png",
+      "available": true
+    },
+    {
+      "name": "Малина",
+      "category": "sorbet",
+      "price": 75,
+      "description": "Інтенсивний сорбет зі свіжої малини без додавання вершків",
+      "image": "/assets/products/malyna.png",
+      "available": true
+    },
+    {
+      "name": "Манго",
+      "category": "sorbet",
+      "price": 80,
+      "description": "Стиглий тропічний манго у вигляді охолоджуючого сорбету",
+      "image": "/assets/products/mango.png",
+      "available": true
+    },
+    {
+      "name": "Гранат",
+      "category": "sorbet",
+      "price": 80,
+      "description": "Кислуватий та освіжаючий сорбет з гранатовим соком",
+      "image": "/assets/products/hranat.png",
+      "available": true
+    },
+    {
+      "name": "Жасмин + Порічка",
+      "category": "sorbet",
+      "price": 85,
+      "description": "Квітковий аромат жасмину поєднується з кислинкою соковитої порічки",
+      "image": "/assets/products/zhasmyn-porychka.png",
+      "available": true
+    },
+    {
+      "name": "Полуниця + Базилік",
+      "category": "jar",
+      "price": 120,
+      "description": "Класичне поєднання полуниці з пряним базиліком у маленькій баночці",
+      "image": "/assets/products/polunytsia-bazylyk.png",
+      "available": true
+    },
+    {
+      "name": "Персик + Розмарин",
+      "category": "jar",
+      "price": 125,
+      "description": "Соковитий персик з трав'яною нотною розмарину — несподівано гарно",
+      "image": "/assets/products/persyk-rozmaryn.png",
+      "available": true
+    },
+    {
+      "name": "Йогурт + Лохина",
+      "category": "jar",
+      "price": 115,
+      "description": "Легкий йогуртовий пломбір з лісовою лохиною у баночці",
+      "image": "/assets/products/yohurt-lokhyna.png",
+      "available": true
+    },
+    {
+      "name": "Куркума + Імбир",
+      "category": "jar",
+      "price": 118,
+      "description": "Зігрівальний та яскравий смак куркуми з пряним імбиром",
+      "image": "/assets/products/kurkuma-imber.png",
+      "available": true
+    },
+    {
+      "name": "Рожок класичний",
+      "category": "cone",
+      "price": 60,
+      "description": "Хрустка вафельна ріжка з однією кулькою морозива на вибір",
+      "image": "/assets/products/rozhok-klasychnyi.png",
+      "available": true
+    },
+    {
+      "name": "Рожок шоколадний",
+      "category": "cone",
+      "price": 70,
+      "description": "Вафельна ріжка, вкрита темним шоколадом та горіховою крихтою",
+      "image": "/assets/products/rozhok-shokoladnyi.png",
+      "available": true
+    },
+    {
+      "name": "Рожок подвійний",
+      "category": "cone",
+      "price": 80,
+      "description": "Велика хрустка ріжка з двома кульками морозива та топінгом",
+      "image": "/assets/products/rozhok-podviinyi.png",
+      "available": true
+    }
+  ]
+}

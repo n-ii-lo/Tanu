@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "node scripts/static-server.js",
-    "dev:vercel": "npx vercel dev --listen 3000"
+    "build": "node scripts/build.js",
+    "preview": "node scripts/static-server.js dist"
   },
   "engines": {
     "node": ">=18"
-  },
-  "dependencies": {
-    "dotenv": "^17.4.2"
   }
 }

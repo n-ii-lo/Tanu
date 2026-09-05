@@ -20,6 +20,9 @@ index2.html
 # Node modules
 node_modules/
 
+# Збірка для деплою (робиться командою npm run build)
+dist/
+
 # Local tools
 инструменты/*
 !инструменты/README.md

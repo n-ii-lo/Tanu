@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+#
+# TODO перед запуском адмінки:
+#   1. repo     — власник/назва репозиторію, куди CMS комітить зміни
+#   2. branch   — гілка, з якої публікується сайт
+#   3. base_url — URL воркера sveltia-cms-auth на Cloudflare (крок 5 брифу)
+
+backend:
+  name: github
+  repo: n-ii-lo/Tanu
+  branch: main
+  base_url: https://sveltia-cms-auth.SUBDOMAIN.workers.dev
+
+site_url: https://www.tanuicecream.com
+
+# Куди CMS кладе завантажені фото в репозиторії
+media_folder: assets/products
+# Який шлях записується в products.json і використовується браузером
+public_folder: /assets/products
+
+collections:
+  - name: content
+    label: Контент сайту
+    files:
+      - name: categories
+        label: Категорії
+        file: data/categories.json
+        fields:
+          - name: categories
+            label: Категорії
+            label_singular: Категорія
+            widget: list
+            summary: '{{label}}'
+            fields:
+              - name: key
+                label: Код
+                widget: string
+                hint: Латиницею, без пробілів. Не міняти для наявних категорій — до нього прив'язані товари.
+              - name: label
+                label: Назва вкладки
+                widget: string
+
+      - name: products
+        label: Товари
+        file: data/products.json
+        fields:
+          - name: products
+            label: Товари
+            label_singular: Товар
+            widget: list
+            summary: '{{name}} — {{price}} грн'
+            thumbnail: image
+            fields:
+              - name: name
+                label: Назва
+                widget: string
+
+              # Тягне список із data/categories.json — окремий файл, тож самопосилання немає.
+              # Якщо relation не запрацює — замінити на закоментований select нижче.
+              - name: category
+                label: Категорія
+                widget: relation
+                collection: content
+                file: categories
+                value_field: '{{categories.*.key}}'
+                display_fields: ['{{categories.*.label}}']
+                search_fields: ['{{categories.*.label}}']
+
+              # ЗАПАСНИЙ ВАРІАНТ замість relation вище:
+              # - name: category
+              #   label: Категорія
+              #   widget: select
+              #   options:
+              #     - { label: Морозиво, value: ice-cream }
+              #     - { label: Сорбети, value: sorbet }
+              #     - { label: Морозиво в банці, value: jar }
+              #     - { label: Рожки, value: cone }
+
+              - name: price
+                label: Ціна, грн
+                widget: number
+                value_type: int
+                min: 0
+                default: 0
+              - name: description
+                label: Опис
+                widget: text
+                required: false
+              - name: image
+                label: Фото
+                widget: image
+                required: false
+                hint: Без фото товар не показується в меню.
+              - name: available
+                label: Показувати на сайті
+                widget: boolean
+                default: true

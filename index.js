@@ -8,17 +8,18 @@
 
   /* ── КОНФІГУРАЦІЯ ────────────────────────────────────────── */
   var CONFIG = {
-    // Дані каталогу беруться локально з data/catalog.js (window.TANU_FALLBACK_PRODUCTS)
+    // Каталог редагується в /admin (Sveltia CMS) і лежить у цих файлах
+    categoriesUrl: 'data/categories.json',
+    productsUrl: 'data/products.json',
+    // Посилання на доставку — одне для всіх карток товару
+    bondUrl: 'https://bond.delivery/restaurant/tanu/?utm_source=tanuicecream&utm_medium=site&utm_campaign=menu'
   };
 
-  /* ── КАТЕГОРІЇ ─────────────────────────────────────────── */
-  var CATEGORIES = [
-    { key: 'all',       label: 'Всі' },
-    { key: 'ice-cream', label: 'Морозиво' },
-    { key: 'sorbet',    label: 'Сорбети' },
-    { key: 'jar',       label: 'Морозиво в банці' },
-    { key: 'cone',      label: 'Рожки' }
-  ];
+  /* ── КАТЕГОРІЇ ─────────────────────────────────────────────
+     Вкладка «Всі» синтетична, решта приходить з data/categories.json
+  ─────────────────────────────────────────────────────────── */
+  var ALL_CATEGORY = { key: 'all', label: 'Всі' };
+  var CATEGORIES = [ALL_CATEGORY];
 
   /* ── СТАН ─────────────────────────────────────────────── */
   var state = {
@@ -46,11 +47,10 @@
 
     if (!el.overlay || !el.btnMenu) return; // захист від відсутніх елементів
 
-    buildCategoryTabs();
     bindEvents();
 
     // Завантажуємо дані для меню одразу, не чекаючи відкриття
-    loadProducts();
+    loadCatalog();
 
     // Показуємо кнопку меню коли Hype сцена провантажиться
     // Hype додає event listener на window для HypeDocuments
@@ -285,8 +285,8 @@
     }, 110);
   }
 
-  /* ── ЗАВАНТАЖЕННЯ ТОВАРІВ ────────────────────────────────── */
-  function loadProducts() {
+  /* ── ЗАВАНТАЖЕННЯ КАТАЛОГУ ───────────────────────────────── */
+  function loadCatalog() {
     if (state.loaded) {
       renderProducts();
       return;
@@ -294,88 +294,62 @@
 
     showLoading();
 
-    fetch('/api/strapi-products?populate=*&pagination[pageSize]=100&sort=sortOrder:asc')
-      .then(function (response) {
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        return response.json();
-      })
-      .then(function (payload) {
-        if (!payload || !Array.isArray(payload.data) || payload.data.length === 0) {
-          throw new Error('Empty Strapi response');
-        }
-        state.products = payload.data.map(mapStrapiProduct).filter(Boolean);
+    Promise.all([
+      fetchJSON(CONFIG.categoriesUrl),
+      fetchJSON(CONFIG.productsUrl)
+    ])
+      .then(function (results) {
+        CATEGORIES = [ALL_CATEGORY].concat(results[0].categories || []);
+        state.products = (results[1].products || []).map(mapProduct);
         state.loaded = true;
-        console.log('[products] loaded from Strapi:', state.products.length);
+        buildCategoryTabs();
         renderProducts();
       })
       .catch(function (error) {
-        console.warn('[products] Strapi fetch failed, using fallback:', error.message);
-        useFallback();
+        console.error('[catalog] load failed:', error.message);
+        showError();
       });
   }
 
-  function mapStrapiProduct(item) {
-    if (!item || !item.attributes) return null;
-    var attributes = item.attributes;
-    var categoryKey = attributes.category &&
-      attributes.category.data &&
-      attributes.category.data.attributes &&
-      attributes.category.data.attributes.key;
+  // no-cache, щоб правки з адмінки не залипали в кеші браузера
+  function fetchJSON(url) {
+    return fetch(url, { cache: 'no-cache' }).then(function (response) {
+      if (!response.ok) throw new Error(url + ' → HTTP ' + response.status);
+      return response.json();
+    });
+  }
 
+  function mapProduct(item) {
     return {
-      id: item.id,
-      name: attributes.name,
-      category: categoryKey || '',
-      price: attributes.price,
-      description: attributes.description || '',
-      slug: attributes.slug,
-      image: resolveImage(attributes)
+      name: item.name,
+      category: item.category || '',
+      price: item.price,
+      description: item.description || '',
+      image: item.image || '',
+      available: item.available !== false
     };
-  }
-
-  function resolveImage(attributes) {
-    var media = attributes.image && attributes.image.data;
-    if (media && media.attributes && media.attributes.url) {
-      return media.attributes.url;
-    }
-    var fallback = window.TANU_FALLBACK_PRODUCTS || [];
-    for (var i = 0; i < fallback.length; i++) {
-      if (fallback[i].slug === attributes.slug) return fallback[i].image;
-    }
-    return '';
-  }
-
-  function useFallback() {
-    var fallback = window.TANU_FALLBACK_PRODUCTS;
-    if (Array.isArray(fallback) && fallback.length > 0) {
-      state.products = fallback;
-    } else {
-      state.products = [];
-    }
-    state.loaded = true;
-    renderProducts();
   }
 
   /* ── ФІЛЬТРАЦІЯ ─────────────────────────────────────────── */
   function getFiltered() {
     return state.products.filter(function (p) {
       var hasImage = p.image && p.image !== '';
+      var isAvailable = p.available !== false;
       var matchCat  = state.activeCategory === 'all' || p.category === state.activeCategory;
       var matchText = !state.query ||
         p.name.toLowerCase().includes(state.query) ||
         p.description.toLowerCase().includes(state.query);
-      return hasImage && matchCat && matchText;
+      return hasImage && isAvailable && matchCat && matchText;
     });
   }
 
-  /* ── РАНДОМНІ КАРТИНКИ З FALLBACK ───────────────────────── */
-  var FALLBACK_IMAGES = (window.TANU_FALLBACK_PRODUCTS || [])
-    .map(function (item) { return item.image; })
-    .filter(Boolean);
-
+  /* ── РАНДОМНА КАРТИНКА НА ВИПАДОК БИТОГО ФОТО ───────────── */
   function getRandomImage() {
-    if (FALLBACK_IMAGES.length === 0) return '';
-    return FALLBACK_IMAGES[Math.floor(Math.random() * FALLBACK_IMAGES.length)];
+    var images = state.products
+      .map(function (item) { return item.image; })
+      .filter(Boolean);
+    if (images.length === 0) return '';
+    return images[Math.floor(Math.random() * images.length)];
   }
 
   /* ── ВІДОБРАЖЕННЯ ТОВАРІВ ───────────────────────────────── */
@@ -400,7 +374,7 @@
     var imgFail = "this.onerror=function(){this.src='" + randomFallback + "';this.onerror=null;}";
 
     var priceHTML = p.price
-      ? '<span class="product-price">' + esc(p.price) + '</span>'
+      ? '<span class="product-price">' + esc(p.price) + ' грн</span>'
       : '';
 
     var descHTML = p.description
@@ -408,7 +382,7 @@
       : '';
 
     return (
-      '<a href="https://bond.delivery/restaurant/tanu/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleAQ9TXFleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAaeOds1LgrXisoBvIpQNFS1h1PaVhr6GrE-4ud0GZXHfGB-M741_Iv3z62a82g_aem_IrubfzRK94tPga4_gmo9Ew" class="product-item" target="_blank" rel="noopener noreferrer">' +
+      '<a href="' + esc(CONFIG.bondUrl) + '" class="product-item" target="_blank" rel="noopener noreferrer">' +
         '<div class="product-item-inner">' +
           '<div class="product-img-wrap">' +
             '<img src="' + esc(imgSrc) + '" alt="' + esc(p.name) + '" loading="lazy" onerror="' + imgFail + '">' +
@@ -427,6 +401,12 @@
 
   function showLoading() {
     el.productList.innerHTML = '<div class="product-list-wrapper"><div class="empty-state">Завантаження...</div></div>';
+  }
+
+  function showError() {
+    el.productList.innerHTML =
+      '<div class="product-list-wrapper"><div class="empty-state">Не вдалося завантажити меню&nbsp;🍦<br>' +
+      '<small style="font-size:12px;margin-top:4px;display:block;">Спробуйте оновити сторінку</small></div></div>';
   }
 
   /* ── УТИЛІТИ ────────────────────────────────────────────── */

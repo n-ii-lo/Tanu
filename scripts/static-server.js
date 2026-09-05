@@ -1,14 +1,12 @@
 const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
-
 const http = require("http");
 const fs = require("fs");
-const { proxyStrapiProducts } = require("../lib/strapi-products-proxy");
 
-console.log("[env] STRAPI_URL:", process.env.STRAPI_URL || "(missing)");
-console.log("[env] STRAPI_API_TOKEN:", process.env.STRAPI_API_TOKEN ? `set (${process.env.STRAPI_API_TOKEN.length} chars)` : "(missing)");
-
-const rootDir = path.resolve(__dirname, "..");
+// Що віддаємо: за замовчуванням корінь репозиторію,
+// або папку з аргументу — `node scripts/static-server.js dist`
+const rootDir = process.argv[2]
+  ? path.resolve(process.cwd(), process.argv[2])
+  : path.resolve(__dirname, "..");
 const port = Number(process.env.PORT || 3000);
 
 const contentTypes = {
@@ -31,47 +29,6 @@ const contentTypes = {
 function send(res, statusCode, headers, body) {
   res.writeHead(statusCode, headers);
   res.end(body);
-}
-
-function loadLocalEnv() {
-  const envPath = path.join(rootDir, ".env.local");
-
-  if (!fs.existsSync(envPath)) {
-    return;
-  }
-
-  const source = fs.readFileSync(envPath, "utf8");
-  const lines = source.split(/\r?\n/);
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-
-    if (!trimmed || trimmed.startsWith("#")) {
-      continue;
-    }
-
-    const separatorIndex = trimmed.indexOf("=");
-
-    if (separatorIndex === -1) {
-      continue;
-    }
-
-    const key = trimmed.slice(0, separatorIndex).trim();
-    let value = trimmed.slice(separatorIndex + 1).trim();
-
-    if (!key || process.env[key]) {
-      continue;
-    }
-
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-
-    process.env[key] = value;
-  }
 }
 
 function resolveRequestPath(urlPath) {
@@ -105,24 +62,6 @@ function resolveRequestPath(urlPath) {
   return path.join(rootDir, "index.html");
 }
 
-async function handleStrapiProxy(req, res) {
-  const upstream = await proxyStrapiProducts({
-    host: req.headers.host,
-    method: req.method,
-    url: req.url,
-  });
-
-  const headers = { ...upstream.headers };
-
-  if (req.method !== "HEAD") {
-    headers["Content-Length"] = Buffer.byteLength(upstream.body);
-  }
-
-  send(res, upstream.status, headers, req.method === "HEAD" ? "" : upstream.body);
-}
-
-loadLocalEnv();
-
 const server = http.createServer((req, res) => {
   if (!req.url) {
     send(res, 400, { "Content-Type": "text/plain; charset=utf-8" }, "Bad Request");
@@ -131,13 +70,6 @@ const server = http.createServer((req, res) => {
 
   if (req.method !== "GET" && req.method !== "HEAD") {
     send(res, 405, { "Content-Type": "text/plain; charset=utf-8" }, "Method Not Allowed");
-    return;
-  }
-
-  const pathname = new URL(req.url, "http://localhost").pathname;
-
-  if (pathname === "/api/strapi-products") {
-    handleStrapiProxy(req, res);
     return;
   }
 

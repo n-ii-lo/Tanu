@@ -1,0 +1,8 @@
+{
+  "categories": [
+    { "key": "ice-cream", "label": "Морозиво" },
+    { "key": "sorbet", "label": "Сорбети" },
+    { "key": "jar", "label": "Морозиво в банці" },
+    { "key": "cone", "label": "Рожки" }
+  ]
+}
